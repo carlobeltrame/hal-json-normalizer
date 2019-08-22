@@ -50,10 +50,6 @@ const json = {
 console.log(normalize(json));
 /* Output:
 {
-  "https://my.api.com/questions/295": {
-    id: 295,
-    text: "How are you?"
-  },
   "https://my.api.com/answers/2620": {
     id: 2620,
     text: "I am great!"
@@ -62,6 +58,16 @@ console.log(normalize(json));
     },
     author: {
       href: "https://my.api.com/users/1024"
+    },
+    _meta: {
+      self: "https://my.api.com/answers/2620"
+    }
+  },
+  "https://my.api.com/questions/295": {
+    id: 295,
+    text: "How are you?",
+    _meta: {
+      self: "https://my.api.com/questions/295"
     }
   }
 }
@@ -88,7 +94,10 @@ console.log(normalize(json));
 /* Output:
 {
   "https://my.api.com/someEntity/1": {
-    camelMe: 1
+    camelMe: 1,
+    _meta: {
+      self: "https://my.api.com/someEntity/1"
+    }
   }
 }
 */
@@ -97,7 +106,10 @@ console.log(normalize(json, { camelizeKeys: false }));
 /* Output:
 {
   "https://my.api.com/someEntity/1": {
-    "camel-me": 1
+    "camel-me": 1,
+    _meta: {
+      self: "https://my.api.com/someEntity/1"
+    }
   }
 }
 */
