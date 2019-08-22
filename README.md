@@ -1,6 +1,6 @@
 # hal-json-normalizer
 
-Utility to normalize HAL JSON data for Vuex applications
+Utility to normalize HAL JSON data for Vuex applications.
 
 [![npm version](https://img.shields.io/npm/v/hal-json-normalizer.svg?style=flat)](https://www.npmjs.com/package/hal-json-normalizer)
 [![Downloads](http://img.shields.io/npm/dm/hal-json-normalizer.svg?style=flat-square)](https://npmjs.org/package/hal-json-normalizer)
@@ -9,8 +9,8 @@ Utility to normalize HAL JSON data for Vuex applications
 
 # Description
 
-hal-json-normalizer helps [HAL JSON](https://tools.ietf.org/html/draft-kelly-json-hal-08) and [Vuex](https://vuex.vuejs.org/) work together.
-Unlike [normalizr](https://github.com/paularmstrong/normalizr) hal-json-normalizer supports HAL+JSON specification, which means that you don't have to care about schemas. It also converts collections into maps, which is a lot more suitable for Vuex.
+hal-json-normalizer helps [HAL JSON](https://tools.ietf.org/html/draft-kelly-json-hal-08) APIs and [Vuex](https://vuex.vuejs.org/) work together.
+Unlike [normalizr](https://github.com/paularmstrong/normalizr), hal-json-normalizer supports the HAL+JSON specification, which means that you don't have to care about schemas.
 
 # Install
 
