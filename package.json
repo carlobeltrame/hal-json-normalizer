@@ -8,7 +8,7 @@
     "clean": "cross-env rimraf dist coverage lib",
     "coverage": "cross-env NODE_ENV=production webpack && nyc _mocha --require @babel/register && NODE_ENV=production webpack -p",
     "lint": "cross-env eslint src --ext .js",
-    "test": "cross-env mocha --compilers js:@babel/register"
+    "test": "cross-env mocha --require @babel/register"
   },
   "repository": {
     "type": "git",
@@ -28,25 +28,26 @@
   },
   "homepage": "https://github.com/carlobeltrame/hal-json-normalizer#readme",
   "devDependencies": {
-    "@babel/core": "^7.1.6",
-    "@babel/preset-env": "^7.1.6",
-    "@babel/register": "^7.0.0",
-    "babel-eslint": "^10.0.1",
-    "babel-loader": "^8.0.4",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/register": "^7.5.5",
+    "babel-eslint": "^10.0.2",
+    "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "cross-env": "^5.2.0",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-loader": "^2.1.1",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1",
+    "eslint": "^6.2.1",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-loader": "^2.2.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
     "immutable": "^4.0.0-rc.12",
-    "mocha": "^5.2.0",
+    "mocha": "^6.2.0",
     "nyc": "^14.1.1",
-    "rimraf": "^2.6.2",
-    "webpack": "^3.12.0",
-    "webpack-node-externals": "^1.5.4"
+    "rimraf": "^3.0.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7",
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
     "lodash": "^4.17.15"
