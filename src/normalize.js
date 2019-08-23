@@ -3,6 +3,7 @@ import isArray from 'lodash/isArray';
 import cloneDeep from 'lodash/cloneDeep';
 import keys from 'lodash/keys';
 import merge from 'lodash/merge';
+import 'url-search-params-polyfill';
 
 /* eslint no-underscore-dangle: ["error", { "allow": ["_links", "_embedded"] }] */
 
