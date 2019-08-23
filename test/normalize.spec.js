@@ -1,8 +1,9 @@
+
 import { expect } from 'chai';
-import normalize from '../dist/bundle';
+import normalize from '../src/normalize';
 
 describe('data is normalized', () => {
-  const exampleExpiryDate = new Date();
+  const exampleExpiryDate = 1513868982;
 
   const json = {
     id: 3,
@@ -102,7 +103,7 @@ describe('data is normalized', () => {
 
   const API_BASE_URL = 'http://www.example.com';
 
-  it('data attributes => map: %{id => Object}', () => {
+  it('data attributes', () => {
     const result = normalize(json, { baseUrl: API_BASE_URL });
 
     expect(result).to.deep.equal(output);
@@ -226,86 +227,56 @@ describe('data is normalized', () => {
 
     expect(result).to.deep.equal(camelizedOutput);
   });
-
-  it('dates should not be affected by camelization', () => {
-    const date = new Date();
-
-    const obj = {
-      id: 1,
-      'started-at': date,
-      _links: {
-        self: {
-          href: 'http://www.example.com/entity/1',
-        },
-      },
-    };
-
-    const camelizedOutput = {
-      'http://www.example.com/entity/1': {
-        id: 1,
-        startedAt: date,
-        _meta: {
-          self: 'http://www.example.com/entity/1',
-        },
-      },
-    };
-
-    const result = normalize(obj);
-
-    expect(result).to.deep.equal(camelizedOutput);
-  });
 });
 
-describe('_embedded is normalized', () => {
-  const json = {
-    id: 3,
-    name: 'Father',
-    _embedded: {
-      firstBornSon: {
-        id: 40,
-        name: 'Son',
-        _links: {
-          self: {
-            href: 'http://example.com/users/40',
+describe('embedded', () => {
+  it('simple embedded', () => {
+    const json = {
+      id: 3,
+      name: 'Father',
+      _embedded: {
+        firstBornSon: {
+          id: 40,
+          name: 'Son',
+          _links: {
+            self: {
+              href: 'http://example.com/users/40',
+            },
           },
         },
       },
-    },
-    _links: {
-      self: {
-        href: 'http://example.com/users/3',
+      _links: {
+        self: {
+          href: 'http://example.com/users/3',
+        },
       },
-    },
-  };
+    };
 
-  const output = {
-    'http://example.com/users/3': {
-      id: 3,
-      name: 'Father',
-      firstBornSon: {
-        href: 'http://example.com/users/40',
+    const output = {
+      'http://example.com/users/3': {
+        id: 3,
+        name: 'Father',
+        firstBornSon: {
+          href: 'http://example.com/users/40',
+        },
+        _meta: {
+          self: 'http://example.com/users/3',
+        },
       },
-      _meta: {
-        self: 'http://example.com/users/3',
+      'http://example.com/users/40': {
+        id: 40,
+        name: 'Son',
+        _meta: {
+          self: 'http://example.com/users/40',
+        },
       },
-    },
-    'http://example.com/users/40': {
-      id: 40,
-      name: 'Son',
-      _meta: {
-        self: 'http://example.com/users/40',
-      },
-    },
-  };
+    };
 
-  it('included => map: %{id => Object}', () => {
     const result = normalize(json);
 
     expect(result).to.deep.equal(output);
   });
-});
 
-describe('embedded', () => {
   it('embedded null', () => {
     const json = {
       id: 2620,
@@ -333,10 +304,7 @@ describe('embedded', () => {
 
     const result = normalize(json);
 
-    expect(result)
-      .to
-      .deep
-      .equal(output);
+    expect(result).to.deep.equal(output);
   });
 
   it('empty embedded list', () => {
@@ -366,10 +334,7 @@ describe('embedded', () => {
 
     const result = normalize(json);
 
-    expect(result)
-      .to
-      .deep
-      .equal(output);
+    expect(result).to.deep.equal(output);
   });
 
   it('non-empty embedded', () => {
@@ -379,7 +344,6 @@ describe('embedded', () => {
       _embedded: {
         question: {
           id: 7,
-          type: 'question',
           _links: {
             self: {
               href: 'http://example.com/questions/7',
@@ -415,10 +379,7 @@ describe('embedded', () => {
 
     const result = normalize(json);
 
-    expect(result)
-      .to
-      .deep
-      .equal(output);
+    expect(result).to.deep.equal(output);
   });
 
   it('non-empty embedded list', () => {
@@ -486,10 +447,7 @@ describe('embedded', () => {
 
     const result = normalize(json);
 
-    expect(result)
-      .to
-      .deep
-      .equal(output);
+    expect(result).to.deep.equal(output);
   });
 
   it('keys of embedded are camelized', () => {
@@ -584,7 +542,7 @@ describe('embedded', () => {
         text: 'Why?',
         _meta: {
           self: 'http://example.com/posts/2620/questions',
-          expires_at: 1513868982,
+          expiresAt: 1513868982,
         },
       },
     };
@@ -773,7 +731,9 @@ describe('links', () => {
             self: {
               href: 'http://example.com/api/v1/post/2620',
             },
-            author: 'http://example.com/api/v1/user/2',
+            author: {
+              href: 'http://example.com/api/v1/user/2',
+            },
             comments: [
               {
                 href: 'http://example.com/api/v1/post/2620/comments/3450',
@@ -806,6 +766,9 @@ describe('links', () => {
       'http://example.com/api/v1/post/2620': {
         id: 2620,
         text: 'hello',
+        author: {
+          href: 'http://example.com/api/v1/user/2',
+        },
         comments: [
           {
             href: 'http://example.com/api/v1/post/2620/comments/3450',
@@ -825,109 +788,166 @@ describe('links', () => {
     expect(result).to.deep.equal(output);
   });
 
-  it('camelize links', () => {
-    const json = {
-      id: 2620,
-      text: 'hello',
-      _embedded: {
-        tags: [
-          {
-            id: 4,
-            _links: {
-              self: {
-                href: 'http://example.com/api/v1/post/2620/tags',
-              },
-              camel_case: {
-                href: 'http://example.com/api/v1/post/2620/camel_case',
-              },
+  const json = {
+    id: 2620,
+    text: 'hello',
+    _embedded: {
+      tags: [
+        {
+          id: 4,
+          _links: {
+            self: {
+              href: 'http://example.com/api/v1/post/2620/tags',
+            },
+            camel_case: {
+              href: 'http://example.com/api/v1/post/2620/camel_case',
             },
           },
-        ],
-      },
-      _links: {
-        self: {
-          href: 'http://example.com/api/v1/post/2620',
         },
-        'camel-case': {
-          href: 'http://example.com/api/v1/post/2620/camel-case',
-        },
+      ],
+    },
+    _links: {
+      self: {
+        href: 'http://example.com/api/v1/post/2620',
       },
-    };
+      'camel-case': {
+        href: 'http://example.com/api/v1/post/2620/camel-case',
+      },
+    },
+  };
 
-    const output = {
-      'http://example.com/api/v1/post/2620': {
-        id: 2620,
-        text: 'hello',
-        tags: [
-          {
-            href: 'http://example.com/api/v1/post/2620/tags',
-          },
-        ],
-        camelCase: {
-          href: 'http://example.com/api/v1/post/2620/camel-case',
+  const output = {
+    'http://example.com/api/v1/post/2620': {
+      id: 2620,
+      text: 'hello',
+      tags: [
+        {
+          href: 'http://example.com/api/v1/post/2620/tags',
         },
-        _meta: {
-          self: 'http://example.com/api/v1/post/2620',
-        },
+      ],
+      camelCase: {
+        href: 'http://example.com/api/v1/post/2620/camel-case',
       },
-      'http://example.com/api/v1/post/2620/tags': {
-        id: 4,
-        camelCase: {
-          href: 'http://example.com/api/v1/post/2620/camel_case',
-        },
-        _meta: {
-          self: 'http://example.com/api/v1/post/2620/tags',
-        },
+      _meta: {
+        self: 'http://example.com/api/v1/post/2620',
       },
-    };
+    },
+    'http://example.com/api/v1/post/2620/tags': {
+      id: 4,
+      camelCase: {
+        href: 'http://example.com/api/v1/post/2620/camel_case',
+      },
+      _meta: {
+        self: 'http://example.com/api/v1/post/2620/tags',
+      },
+    },
+  };
 
+  const output2 = {
+    'http://example.com/api/v1/post/2620': {
+      id: 2620,
+      text: 'hello',
+      tags: [
+        {
+          href: 'http://example.com/api/v1/post/2620/tags',
+        },
+      ],
+      'camel-case': {
+        href: 'http://example.com/api/v1/post/2620/camel-case',
+      },
+      _meta: {
+        self: 'http://example.com/api/v1/post/2620',
+      },
+    },
+    'http://example.com/api/v1/post/2620/tags': {
+      id: 4,
+      camel_case: {
+        href: 'http://example.com/api/v1/post/2620/camel_case',
+      },
+      _meta: {
+        self: 'http://example.com/api/v1/post/2620/tags',
+      },
+    },
+  };
+
+  it('camelize links', () => {
     const result = normalize(json);
 
     expect(result).to.deep.equal(output);
+  });
+
+  it('deactivate camelizing links', () => {
+    const result = normalize(json, { camelizeKeys: false });
+
+    expect(result).to.deep.equal(output2);
   });
 });
 
 describe('references (resources with nothing but a self link)', () => {
-  it('normalizes references', () => {
-    const json = {
-      id: 2620,
-      text: 'hello',
-      _embedded: {
-        question: {
-          _links: {
-            self: {
-              href: 'http://example.com/question/1234',
-            },
+  const json = {
+    id: 2620,
+    text: 'hello',
+    _embedded: {
+      question: {
+        _links: {
+          self: {
+            href: 'http://example.com/question/1234',
           },
         },
       },
-      _links: {
-        self: {
-          href: 'http://example.com/entity/1',
-        },
+    },
+    _links: {
+      self: {
+        href: 'http://example.com/entity/1',
       },
-    };
+    },
+  };
 
-    const output = {
-      'http://example.com/entity/1': {
-        id: 2620,
-        text: 'hello',
-        question: {
-          href: 'http://example.com/question/1234',
-        },
-        _meta: {
-          self: 'http://example.com/entity/1',
-        },
+  const output = {
+    'http://example.com/entity/1': {
+      id: 2620,
+      text: 'hello',
+      question: {
+        href: 'http://example.com/question/1234',
       },
-    };
+      _meta: {
+        self: 'http://example.com/entity/1',
+      },
+    },
+    'http://example.com/question/1234': {
+      _meta: {
+        self: 'http://example.com/question/1234',
+      },
+    },
+  };
 
+  const output2 = {
+    'http://example.com/entity/1': {
+      id: 2620,
+      text: 'hello',
+      question: {
+        href: 'http://example.com/question/1234',
+      },
+      _meta: {
+        self: 'http://example.com/entity/1',
+      },
+    },
+  };
+
+  it('does not filter references by default', () => {
     const result = normalize(json);
 
     expect(result).to.deep.equal(output);
   });
 
+  it('filters references if configured', () => {
+    const result = normalize(json, { filterReferences: true });
+
+    expect(result).to.deep.equal(output2);
+  });
+
   it('handles top-level reference gracefully', () => {
-    const json = {
+    const json2 = {
       _links: {
         self: {
           href: 'http://example.com/entity/1',
@@ -935,12 +955,130 @@ describe('references (resources with nothing but a self link)', () => {
       },
     };
 
-    // TODO is this really the most logical output?
-    const output = {};
+    const output3 = {};
 
+    const result = normalize(json2, { filterReferences: true });
+
+    expect(result).to.deep.equal(output3);
+  });
+});
+
+describe('meta', () => {
+  const json = {
+    id: 2620,
+    test: {
+      _meta: {
+        thisMetaKeyCanBeCamelized: 1,
+      },
+    },
+    _meta: {
+      expires_at: 1513868982,
+    },
+    other_meta: {
+      best_before: 1513868982,
+    },
+    _links: {
+      self: {
+        href: 'http://example.com/test/2620',
+      },
+    },
+  };
+
+  const outputWithDefaultMetaAndCamelization = {
+    'http://example.com/test/2620': {
+      id: 2620,
+      test: {
+        meta: {
+          thisMetaKeyCanBeCamelized: 1,
+        },
+      },
+      otherMeta: {
+        bestBefore: 1513868982,
+      },
+      _meta: {
+        self: 'http://example.com/test/2620',
+        expiresAt: 1513868982,
+      },
+    },
+  };
+
+  const outputWithDefaultMetaAndWithoutCamelization = {
+    'http://example.com/test/2620': {
+      id: 2620,
+      test: {
+        _meta: {
+          thisMetaKeyCanBeCamelized: 1,
+        },
+      },
+      other_meta: {
+        best_before: 1513868982,
+      },
+      _meta: {
+        self: 'http://example.com/test/2620',
+        expires_at: 1513868982,
+      },
+    },
+  };
+
+  const outputWithCustomMetaAndCamelization = {
+    'http://example.com/test/2620': {
+      id: 2620,
+      test: {
+        meta: {
+          thisMetaKeyCanBeCamelized: 1,
+        },
+      },
+      meta: {
+        expiresAt: 1513868982,
+      },
+      other_meta: {
+        self: 'http://example.com/test/2620',
+        bestBefore: 1513868982,
+      },
+    },
+  };
+
+  const outputWithCustomMetaAndWithoutCamelization = {
+    'http://example.com/test/2620': {
+      id: 2620,
+      test: {
+        _meta: {
+          thisMetaKeyCanBeCamelized: 1,
+        },
+      },
+      _meta: {
+        expires_at: 1513868982,
+      },
+      other_meta: {
+        self: 'http://example.com/test/2620',
+        best_before: 1513868982,
+      },
+    },
+  };
+
+  it('default meta key with camelization', () => {
     const result = normalize(json);
 
-    expect(result).to.deep.equal(output);
+    expect(result).to.deep.equal(outputWithDefaultMetaAndCamelization);
+  });
+
+  it('default meta key without camelization', () => {
+    const result = normalize(json, { camelizeKeys: false });
+
+    expect(result).to.deep.equal(outputWithDefaultMetaAndWithoutCamelization);
+  });
+
+  it('custom meta key with camelization', () => {
+    console.log(json._meta);
+    const result = normalize(json, { metaKey: 'other_meta' });
+
+    expect(result).to.deep.equal(outputWithCustomMetaAndCamelization);
+  });
+
+  it('custom meta key without camelization', () => {
+    const result = normalize(json, { camelizeKeys: false, metaKey: 'other_meta' });
+
+    expect(result).to.deep.equal(outputWithCustomMetaAndWithoutCamelization);
   });
 });
 
@@ -957,7 +1095,9 @@ describe('complex', () => {
         id: 1,
         slug: 'superyuri',
         _links: {
-          self: 'http://example.com/users/1',
+          self: {
+            href: 'http://example.com/users/1',
+          },
         },
       },
       likedBy: [],
@@ -966,7 +1106,9 @@ describe('complex', () => {
           id: 1,
           slug: 'superyuri',
           _links: {
-            self: 'http://example.com/users/1',
+            self: {
+              href: 'http://example.com/users/1',
+            },
           },
         },
       ],
@@ -1010,7 +1152,7 @@ describe('complex', () => {
       ],
       _meta: {
         self: 'http://example.com/questions/29',
-        expires_at: 1513868982,
+        expiresAt: 1513868982,
       },
     },
     'http://example.com/users/1': {
@@ -1146,14 +1288,12 @@ describe('base URI removal', () => {
     const result = normalize(json);
 
     expect(result)
-      .to
-      .deep
-      .equal(output2);
+      .to.deep.equal(output2);
   });
 });
 
 describe('URI comparison', () => {
-  it('sorts query parameters in self links', () => {
+  it('sorts query parameters in links', () => {
     const json = {
       id: 29,
       text: 'Perche il mare?',
@@ -1162,7 +1302,9 @@ describe('URI comparison', () => {
           id: 1,
           slug: 'superyuri',
           _links: {
-            self: 'http://example.com/users/1?abc=123&test=456',
+            self: {
+              href: 'http://example.com/users/1?test=456&abc=123',
+            },
           },
         },
       },
@@ -1177,7 +1319,7 @@ describe('URI comparison', () => {
     };
 
     const output = {
-      'http://example.com/questions/29a=test&a%5B%5D=123&e%5B%5D=abc': {
+      'http://example.com/questions/29?a=test&a%5B%5D=123&e%5B%5D=abc': {
         id: 29,
         text: 'Perche il mare?',
         author: {
@@ -1187,7 +1329,7 @@ describe('URI comparison', () => {
           href: 'http://example.com/users?active=true&role=Admin',
         },
         _meta: {
-          self: 'http://example.com/questions/29a=test&a%5B%5D=123&e%5B%5D=abc',
+          self: 'http://example.com/questions/29?a=test&a%5B%5D=123&e%5B%5D=abc',
         },
       },
       'http://example.com/users/1?abc=123&test=456': {
@@ -1201,7 +1343,7 @@ describe('URI comparison', () => {
 
     const result = normalize(json);
 
-    expect(result).to.deep.eql(output);
+    expect(result).to.deep.equal(output);
   });
 
   it('matches URIs with different query parameter order', () => {
@@ -1213,7 +1355,9 @@ describe('URI comparison', () => {
           id: 1,
           slug: 'superyuri',
           _links: {
-            self: 'http://example.com/users/1?abc=123&test=456',
+            self: {
+              href: 'http://example.com/users/1?abc=123&test=456',
+            },
           },
         },
         answeredBy: [
@@ -1221,7 +1365,9 @@ describe('URI comparison', () => {
             id: 1,
             slug: 'superyuri',
             _links: {
-              self: 'http://example.com/users/1?test=456&abc=123',
+              self: {
+                href: 'http://example.com/users/1?test=456&abc=123',
+              },
             },
           },
         ],
@@ -1260,6 +1406,6 @@ describe('URI comparison', () => {
 
     const result = normalize(json);
 
-    expect(result).to.deep.eql(output);
+    expect(result).to.deep.equal(output);
   });
 });
