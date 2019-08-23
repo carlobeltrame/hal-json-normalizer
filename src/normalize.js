@@ -7,7 +7,7 @@ import 'url-search-params-polyfill';
 
 /* eslint no-underscore-dangle: ["error", { "allow": ["_links", "_embedded"] }] */
 
-function sortQueryParams(uri) {
+export function sortQueryParams(uri) {
   const queryStart = uri.indexOf('?');
   if (queryStart === -1) return uri;
   const prefix = uri.substring(0, queryStart);
