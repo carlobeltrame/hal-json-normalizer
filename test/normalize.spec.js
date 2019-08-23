@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import normalize from '../src/normalize';
+import normalize from '../dist/bundle';
 
 describe('data is normalized', () => {
   const exampleExpiryDate = 1513868982;
@@ -1069,7 +1069,6 @@ describe('meta', () => {
   });
 
   it('custom meta key with camelization', () => {
-    console.log(json._meta);
     const result = normalize(json, { metaKey: 'other_meta' });
 
     expect(result).to.deep.equal(outputWithCustomMetaAndCamelization);

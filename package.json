@@ -8,7 +8,7 @@
     "clean": "cross-env rimraf dist coverage lib",
     "coverage": "cross-env NODE_ENV=production webpack && nyc _mocha --require @babel/register && NODE_ENV=production webpack -p",
     "lint": "cross-env eslint src --ext .js",
-    "test": "cross-env mocha --require @babel/register"
+    "test": "cross-env npm run build && mocha --require @babel/register"
   },
   "repository": {
     "type": "git",
