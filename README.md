@@ -21,7 +21,7 @@ $ npm install hal-json-normalizer
 # Example
 
 ```JavaScript
-import normalize from 'hal-json-normalizer';
+import { normalize } from 'hal-json-normalizer';
 
 const json = {
   id: 2620,

@@ -3,32 +3,9 @@ import isArray from 'lodash/isArray';
 import cloneDeep from 'lodash/cloneDeep';
 import keys from 'lodash/keys';
 import merge from 'lodash/merge';
-import 'url-search-params-polyfill';
+import normalizeUri from './normalizeUri';
 
 /* eslint no-underscore-dangle: ["error", { "allow": ["_links", "_embedded"] }] */
-
-export function sortQueryParams(uri) {
-  const queryStart = uri.indexOf('?');
-  if (queryStart === -1) return uri;
-  const prefix = uri.substring(0, queryStart);
-  const query = new URLSearchParams(uri.substring(queryStart + 1));
-  const modifiedQuery = new URLSearchParams();
-
-  [...new Set(query.keys())].sort().forEach((key) => {
-    query.getAll(key).forEach((value) => {
-      modifiedQuery.append(key, value);
-    });
-  });
-
-  if ([...modifiedQuery.keys()].length) {
-    return `${prefix}?${modifiedQuery.toString()}`;
-  }
-  return prefix;
-}
-
-function normalizeUri(uri, baseUrl) {
-  return sortQueryParams(uri).replace(new RegExp(`^(${baseUrl})`), '');
-}
 
 function normalizeLink(link, baseUrl) {
   if (!link || !link.href) return link;
@@ -146,7 +123,7 @@ extractResource = (json, opts) => {
   return ret;
 };
 
-export default function normalize(json, opts = {}) {
+function normalize(json, opts = {}) {
   const optsWithDefaults = {
     camelizeKeys: true,
     baseUrl: '',
@@ -162,3 +139,6 @@ export default function normalize(json, opts = {}) {
 
   return extractResource(json, optsWithDefaults);
 }
+
+exports.normalize = normalize;
+exports.normalizeUri = normalizeUri;
