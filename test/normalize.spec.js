@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { normalize } from '../src/normalize';
+import normalize from '../src/normalize';
 
 describe('data is normalized', () => {
   const exampleExpiryDate = 1513868982;
@@ -100,16 +100,14 @@ describe('data is normalized', () => {
     },
   };
 
-  const API_BASE_URL = 'http://www.example.com';
-
   it('data attributes', () => {
-    const result = normalize(json, { baseUrl: API_BASE_URL });
+    const result = normalize(json, { normalizeUri: (uri) => uri.replace(/^http:\/\/www.example.com/, '') });
 
     expect(result).to.deep.equal(output);
   });
 
   it("data is empty shouldn't fail", () => {
-    const result = normalize({}, { baseUrl: API_BASE_URL });
+    const result = normalize({}, { normalizeUri: (uri) => uri.replace(/^http:\/\/www.example.com/, '') });
 
     expect(result).to.deep.equal({});
   });
@@ -1274,24 +1272,20 @@ describe('base URI removal', () => {
   };
 
   it('removes prefix if option is set', () => {
-    const result = normalize(json, { baseUrl: 'http://example.com/api' });
+    const result = normalize(json, { normalizeUri: (uri) => uri.replace(/^http:\/\/example.com\/api/, '') });
 
-    expect(result)
-      .to
-      .deep
-      .equal(output);
+    expect(result).to.deep.equal(output);
   });
 
-  it('doesn\'t remove prefix by default', () => {
+  it('doesn\'t process URIs by default', () => {
     const result = normalize(json);
 
-    expect(result)
-      .to.deep.equal(output2);
+    expect(result).to.deep.equal(output2);
   });
 });
 
 describe('URI handling', () => {
-  it('sorts query parameters in links', () => {
+  it('normalizes link URIs', () => {
     const json = {
       id: 29,
       text: 'Perche il mare?',
@@ -1317,34 +1311,34 @@ describe('URI handling', () => {
     };
 
     const output = {
-      'http://example.com/questions/29?a=test&a%5B%5D=123&e%5B%5D=abc': {
+      'http://example.com/questions/29': {
         id: 29,
         text: 'Perche il mare?',
         author: {
-          href: 'http://example.com/users/1?abc=123&test=456',
+          href: 'http://example.com/users/1',
         },
         activeAdmins: {
-          href: 'http://example.com/users?active=true&role=Admin',
+          href: 'http://example.com/users',
         },
         _meta: {
-          self: 'http://example.com/questions/29?a=test&a%5B%5D=123&e%5B%5D=abc',
+          self: 'http://example.com/questions/29',
         },
       },
-      'http://example.com/users/1?abc=123&test=456': {
+      'http://example.com/users/1': {
         id: 1,
         slug: 'superyuri',
         _meta: {
-          self: 'http://example.com/users/1?abc=123&test=456',
+          self: 'http://example.com/users/1',
         },
       },
     };
 
-    const result = normalize(json);
+    const result = normalize(json, { normalizeUri: (uri) => uri.replace(/\?.*/, '') });
 
     expect(result).to.deep.equal(output);
   });
 
-  it('matches URIs with different query parameter order', () => {
+  it('matches URIs when normalizing away query parameters', () => {
     const json = {
       id: 29,
       text: 'Perche il mare?',
@@ -1382,27 +1376,27 @@ describe('URI handling', () => {
         id: 29,
         text: 'Perche il mare?',
         author: {
-          href: 'http://example.com/users/1?abc=123&test=456',
+          href: 'http://example.com/users/1',
         },
         answeredBy: [
           {
-            href: 'http://example.com/users/1?abc=123&test=456',
+            href: 'http://example.com/users/1',
           },
         ],
         _meta: {
           self: 'http://example.com/questions/29',
         },
       },
-      'http://example.com/users/1?abc=123&test=456': {
+      'http://example.com/users/1': {
         id: 1,
         slug: 'superyuri',
         _meta: {
-          self: 'http://example.com/users/1?abc=123&test=456',
+          self: 'http://example.com/users/1',
         },
       },
     };
 
-    const result = normalize(json);
+    const result = normalize(json, { normalizeUri: (uri) => uri.replace(/\?.*/, '') });
 
     expect(result).to.deep.equal(output);
   });

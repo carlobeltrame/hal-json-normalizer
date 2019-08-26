@@ -3,13 +3,12 @@ import isArray from 'lodash/isArray';
 import cloneDeep from 'lodash/cloneDeep';
 import keys from 'lodash/keys';
 import merge from 'lodash/merge';
-import normalizeUri from './normalizeUri';
 
 /* eslint no-underscore-dangle: ["error", { "allow": ["_links", "_embedded"] }] */
 
-function normalizeLink(link, baseUrl) {
+function normalizeLink(link, normalizeUri) {
   if (!link || !link.href) return link;
-  return { ...link, href: normalizeUri(link.href, baseUrl) };
+  return { ...link, href: normalizeUri(link.href) };
 }
 
 function camelizeNestedKeys(attributeValue) {
@@ -49,7 +48,7 @@ function extractSingleEmbed(embed, ret, opts) {
   if (!(opts.filterReferences && isReference(embed))) {
     merge(ret, extractResource(embed, opts));
   }
-  return normalizeLink(cloneDeep(((embed || {})._links || {}).self) || null, opts.baseUrl);
+  return normalizeLink(cloneDeep(((embed || {})._links || {}).self) || null, opts.normalizeUri);
 }
 
 function extractEmbeds(embeds, ret, opts) {
@@ -77,15 +76,15 @@ function extractAllEmbedded(json, uri, opts) {
 }
 
 function extractAllLinks(json, uri, opts) {
-  const { camelizeKeys, baseUrl } = opts;
+  const { camelizeKeys, normalizeUri } = opts;
   const ret = { [uri]: {} };
 
   keys(json._links).forEach((key) => {
     if (key === 'self') return;
     if (camelizeKeys) {
-      ret[uri][camelCase(key)] = normalizeLink(cloneDeep(json._links[key]), baseUrl);
+      ret[uri][camelCase(key)] = normalizeLink(cloneDeep(json._links[key]), normalizeUri);
     } else {
-      ret[uri][key] = normalizeLink(cloneDeep(json._links[key]), baseUrl);
+      ret[uri][key] = normalizeLink(cloneDeep(json._links[key]), normalizeUri);
     }
   });
 
@@ -93,13 +92,13 @@ function extractAllLinks(json, uri, opts) {
 }
 
 extractResource = (json, opts) => {
-  const { camelizeKeys, baseUrl, metaKey } = opts;
+  const { camelizeKeys, normalizeUri, metaKey } = opts;
 
   if (!isResource(json)) {
     return json;
   }
 
-  const uri = normalizeUri(json._links.self.href, baseUrl);
+  const uri = normalizeUri(json._links.self.href);
   const ret = { [uri]: {} };
 
   keys(json).filter((key) => key !== '_embedded' && key !== '_links').forEach((key) => {
@@ -123,10 +122,10 @@ extractResource = (json, opts) => {
   return ret;
 };
 
-function normalize(json, opts = {}) {
+export default function normalize(json, opts = {}) {
   const optsWithDefaults = {
     camelizeKeys: true,
-    baseUrl: '',
+    normalizeUri: (uri) => uri,
     metaKey: '_meta',
     filterReferences: false,
     ...opts,
@@ -139,6 +138,3 @@ function normalize(json, opts = {}) {
 
   return extractResource(json, optsWithDefaults);
 }
-
-exports.normalize = normalize;
-exports.normalizeUri = normalizeUri;

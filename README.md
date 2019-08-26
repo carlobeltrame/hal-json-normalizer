@@ -21,7 +21,7 @@ $ npm install hal-json-normalizer
 # Example
 
 ```JavaScript
-import { normalize } from 'hal-json-normalizer';
+import normalize from 'hal-json-normalizer';
 
 const json = {
   id: 2620,
@@ -116,9 +116,9 @@ console.log(normalize(json, { camelizeKeys: false }));
 ```
 
 
-## API base URL
+## Normalizing URIs
 
-In many cases, all API URIs will start with the same prefix. This prefix can be filtered out of all identifiers with the `baseUrl` option.
+In many cases, all API URIs will start with the same prefix, or you may want to treat different orderings of query parameters as the same endpoint, etc. You can specify a normalization strategy for all identifiers by passing a function to the `normalizeUri` option.
 
 ```JavaScript
 const json = {
@@ -154,7 +154,7 @@ console.log(normalize(json));
 }
 */
 
-console.log(normalize(json, { baseUrl: 'https://my.api.com/api/v2' }));
+console.log(normalize(json, { normalizeUri: (uri) => uri.replace(/^https:\/\/my.api.com\/api\/v2/, '') }));
 /* Output:
 {
   '/someEntity/1: {
