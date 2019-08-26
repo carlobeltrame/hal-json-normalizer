@@ -6,7 +6,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack -p",
     "clean": "cross-env rimraf dist coverage lib",
-    "coverage": "cross-env NODE_ENV=production webpack && nyc --reporter=lcov npm run test && NODE_ENV=production webpack -p",
+    "coverage": "cross-env nyc --reporter=lcov npm run test",
     "lint": "cross-env eslint src --ext .js",
     "test": "cross-env npm run build && mocha --require @babel/register"
   },

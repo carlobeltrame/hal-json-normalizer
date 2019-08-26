@@ -1,6 +1,5 @@
-
 import { expect } from 'chai';
-import normalize, { sortQueryParams } from '../dist/bundle';
+import normalize, { sortQueryParams } from '../src/normalize';
 
 describe('data is normalized', () => {
   const exampleExpiryDate = 1513868982;
