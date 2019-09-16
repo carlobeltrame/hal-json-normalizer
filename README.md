@@ -292,7 +292,7 @@ console.log(normalize(json));
 }
 */
 
-console.log(normalize(json, { filterResources: true }));
+console.log(normalize(json, { filterReferences: true }));
 /* Output:
 {
   'https://my.api.com/posts/1': {
