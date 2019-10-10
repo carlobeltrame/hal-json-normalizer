@@ -142,7 +142,7 @@ console.log(normalize(json));
   'https://my.api.com/api/v2/someEntity/1': {
     id: 1,
     someApiInternalLink: {
-      href: '/related/20',
+      href: 'https://my.api.com/api/v2/related/20',
     },
     someExternalLink: {
       href: 'test.com/not-starting-with-the-same-prefix',
