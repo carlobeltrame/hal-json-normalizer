@@ -1400,4 +1400,146 @@ describe('URI handling', () => {
 
     expect(result).to.deep.equal(output);
   });
+
+  it('can work with empty normalized URIs', () => {
+    const exampleExpiryDate = 1513868982;
+
+    const json = {
+      id: 3,
+      text: 'hello',
+      number: 3,
+      social: {
+        likes: 35,
+      },
+      _embedded: {
+        author: {
+          id: 42,
+          name: 'Frank Zappa',
+          _links: {
+            self: {
+              href: 'http://www.example.com/api/users/42',
+            },
+          },
+        },
+        attachments: [
+          {
+            id: 4003,
+            title: 'document.pdf',
+            filePath: 'http://...',
+            _links: {
+              self: {
+                href: 'http://www.example.com/api/attachments/4003',
+              },
+              post: {
+                href: 'http://www.example.com/api',
+              },
+            },
+          },
+        ],
+      },
+      _links: {
+        self: {
+          href: 'http://www.example.com/api',
+        },
+        approvedBy: {
+          href: 'http://www.example.com/api/users/42',
+        },
+        comments: {
+          href: 'http://www.example.com/api/comments?post=3',
+        },
+      },
+      _meta: {
+        expires: exampleExpiryDate,
+      },
+    };
+
+    const output = {
+      '': {
+        id: 3,
+        text: 'hello',
+        number: 3,
+        social: {
+          likes: 35,
+        },
+        author: {
+          href: '/users/42',
+        },
+        attachments: [
+          {
+            href: '/attachments/4003',
+          },
+        ],
+        approvedBy: {
+          href: '/users/42',
+        },
+        comments: {
+          href: '/comments?post=3',
+        },
+        _meta: {
+          expires: exampleExpiryDate,
+          self: '',
+        },
+      },
+      '/users/42': {
+        id: 42,
+        name: 'Frank Zappa',
+        _meta: {
+          self: '/users/42',
+        },
+      },
+      '/attachments/4003': {
+        id: 4003,
+        title: 'document.pdf',
+        filePath: 'http://...',
+        post: {
+          href: '',
+        },
+        _meta: {
+          self: '/attachments/4003',
+        },
+      },
+    };
+
+    const result = normalize(json, { normalizeUri: (uri) => uri.replace(/^http:\/\/www.example.com\/api/, '') });
+
+    expect(result).to.deep.equal(output);
+  });
+
+  it(' can work with empty URIs', () => {
+    const json = {
+      _links: {
+        docu: {
+          href: '/swagger',
+        },
+        login: {
+          href: '/login',
+        },
+        self: {
+          href: '',
+        },
+      },
+      title: 'Root endpoint - My API',
+      user: 'Frank Zappa',
+    };
+
+    const output = {
+      '': {
+        title: 'Root endpoint - My API',
+        user: 'Frank Zappa',
+        docu: {
+          href: '/swagger',
+        },
+        login: {
+          href: '/login',
+        },
+        _meta: {
+          self: '',
+        },
+      },
+    };
+
+    const result = normalize(json);
+
+    expect(result).to.deep.equal(output);
+  });
 });

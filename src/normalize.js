@@ -30,7 +30,7 @@ function camelizeNestedKeys(attributeValue) {
 }
 
 function isResource(value) {
-  return value && value._links && value._links.self && value._links.self.href;
+  return value && value._links && value._links.self && (value._links.self.href != null);
 }
 
 function hasSingleKey(object, key) {
