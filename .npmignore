@@ -5,5 +5,7 @@ src
 test
 .babelrc
 .eslintrc
+.idea
+.nyc_output
 .travis.yml
 webpack.config.js

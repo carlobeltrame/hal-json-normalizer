@@ -1,3 +1,6 @@
+### v 1.0.3 (29 Oct 2019)
+- Clean up NPM package so it only includes the minimal files necessary
+
 ### v 1.0.2 (29 Oct 2019)
 - Fix a bug that occurred when passing in an empty string as an URI
 
