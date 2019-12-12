@@ -1505,7 +1505,7 @@ describe('URI handling', () => {
     expect(result).to.deep.equal(output);
   });
 
-  it(' can work with empty URIs', () => {
+  it('can work with empty URIs', () => {
     const json = {
       _links: {
         docu: {
