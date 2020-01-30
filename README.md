@@ -224,7 +224,8 @@ console.log(normalize(json, { metaKey: '__metadata' }));
 
 ## Name for embedded lists
 
-In some applications, you might want to make collections with their own URI indistinguishable from embedded collections. However, in HAL, collections that are retrieved under a certain URI usually contain a property called `items` or similar, which holds the actual array of collection members. To imitate this in embedded collections, you can have them automatically be wrapped in a similar `items` property using the `embeddedCollectionName` option.
+In some applications, you might want to make standalone collections with their own URI indistinguishable from embedded collections. However, in HAL, standalone collections that are retrieved under a certain URI usually contain a property called `items` or similar, which holds the actual array of collection members. To imitate this in embedded collections, you can have them automatically be wrapped in a similar `items` property (if they aren't already) using the `embeddedCollectionName` option.
+> Caution: The value of embeddedListName should be a reserved word in your API. In particular, this tool can not currently handle an embedded collection with the relation name `items` correctly when embeddedListName is also `items`.
 
 ```JavaScript
 const json = {

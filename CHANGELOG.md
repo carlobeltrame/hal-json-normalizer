@@ -1,3 +1,6 @@
+### v 2.1.2 (30 Jan 2020)
+- Fix standalone lists when embeddedListName is set
+
 ### v 2.1.0 (30 Jan 2020)
 - Add embeddedListName option
 

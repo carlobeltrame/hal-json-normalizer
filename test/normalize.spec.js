@@ -517,6 +517,72 @@ describe('embedded', () => {
     expect(result).to.deep.equal(output);
   });
 
+  it('standalone list with embeddedListName option', () => {
+    const json = {
+      _embedded: {
+        items: [
+          {
+            id: 123,
+            content: 'great post',
+            _links: {
+              self: {
+                href: 'http://example.com/comments/123',
+              },
+            },
+          },
+          {
+            id: 124,
+            content: 'thanks',
+            _links: {
+              self: {
+                href: 'http://example.com/comments/124',
+              },
+            },
+          },
+        ],
+      },
+      _links: {
+        self: {
+          href: 'http://example.com/posts/257',
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts/257': {
+        items: [
+          {
+            href: 'http://example.com/comments/123',
+          },
+          {
+            href: 'http://example.com/comments/124',
+          },
+        ],
+        _meta: {
+          self: 'http://example.com/posts/257',
+        },
+      },
+      'http://example.com/comments/123': {
+        id: 123,
+        content: 'great post',
+        _meta: {
+          self: 'http://example.com/comments/123',
+        },
+      },
+      'http://example.com/comments/124': {
+        id: 124,
+        content: 'thanks',
+        _meta: {
+          self: 'http://example.com/comments/124',
+        },
+      },
+    };
+
+    const result = normalize(json, { embeddedListName: 'items' });
+
+    expect(result).to.deep.equal(output);
+  });
+
   it('keys of embedded are camelized', () => {
     const json = {
       id: 2620,
