@@ -222,6 +222,114 @@ console.log(normalize(json, { metaKey: '__metadata' }));
 ```
 
 
+## Name for embedded lists
+
+In some applications, you might want to make collections with their own URI indistinguishable from embedded collections. However, in HAL, collections that are retrieved under a certain URI usually contain a property called `items` or similar, which holds the actual array of collection members. To imitate this in embedded collections, you can have them automatically be wrapped in a similar `items` property using the `embeddedCollectionName` option.
+
+```JavaScript
+const json = {
+  id: 1,
+  _embedded: {
+    comments: [
+      {
+        text: 'Hello World!',
+        author: 'James',
+        _links: {
+          self: {
+            href: 'https://my.api.com/comments/53204',
+          },
+        },
+      },
+      {
+        text: 'Hi there',
+        author: 'Joana',
+        _links: {
+          self: {
+            href: 'https://my.api.com/comments/1395',
+          },
+        },
+      },
+    ],
+  },
+  _links: {
+    self: {
+      href: 'https://my.api.com/someEntity/1',
+    },
+  },
+};
+
+console.log(normalize(json));
+/* Output:
+{
+  'https://my.api.com/someEntity/1': {
+    id: 1,
+    comments: [
+      {
+        href: 'https://my.api.com/comments/53204',
+      },
+      {
+        href: 'https://my.api.com/comments/1395',
+      },
+    ],
+    _meta: {
+      self: 'https://my.api.com/someEntity/1',
+    },
+  },
+  'https://my.api.com/comments/53204': {
+    text: 'Hello World!',
+    author: 'James',
+    _meta: {
+      self: 'https://my.api.com/comments/53204'
+    },
+  }
+  'https://my.api.com/comments/1395': {
+    text: 'Hi there',
+    author: 'Joana',
+    _meta: {
+      self: 'https://my.api.com/comments/1395'
+    },
+  },
+}
+*/
+
+console.log(normalize(json, { embeddedListName: 'items' }));
+/* Output:
+{
+  'https://my.api.com/someEntity/1': {
+    id: 1,
+    comments: {
+      items: [
+        {
+          href: 'https://my.api.com/comments/53204',
+        },
+        {
+          href: 'https://my.api.com/comments/1395',
+        },
+      ],
+      _meta: {
+        self: 'https://my.api.com/someEntity/1',
+      ],
+    },
+  },
+  'https://my.api.com/comments/53204': {
+    text: 'Hello World!',
+    author: 'James',
+    _meta: {
+      self: 'https://my.api.com/comments/53204'
+    },
+  }
+  'https://my.api.com/comments/1395': {
+    text: 'Hi there',
+    author: 'Joana',
+    _meta: {
+      self: 'https://my.api.com/comments/1395'
+    },
+  },
+}
+*/
+```
+
+
 ## Filtering references
 
 Even if the HAL JSON standard does not define it this way, some API server frameworks (like apigility in the Zend Framework 2) can sometimes send stripped down versions of deeply nested embedded resources. As you can see below (the `author` of the comment resource), such references contain nothing but a self link. You can prevent these incomplete resource representations from polluting your store using the `filterReferences` option.

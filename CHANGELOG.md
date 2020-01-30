@@ -1,3 +1,6 @@
+### v 1.1.0 (30 Jan 2020)
+- Add embeddedListName option
+
 ### v 1.0.3 (29 Oct 2019)
 - Clean up NPM package so it only includes the minimal files necessary
 

@@ -447,6 +447,76 @@ describe('embedded', () => {
     expect(result).to.deep.equal(output);
   });
 
+  it('non-empty embedded list with embeddedListName option', () => {
+    const json = {
+      id: 257,
+      _embedded: {
+        comments: [
+          {
+            id: 123,
+            content: 'great post',
+            _links: {
+              self: {
+                href: 'http://example.com/comments/123',
+              },
+            },
+          },
+          {
+            id: 124,
+            content: 'thanks',
+            _links: {
+              self: {
+                href: 'http://example.com/comments/124',
+              },
+            },
+          },
+        ],
+      },
+      _links: {
+        self: {
+          href: 'http://example.com/posts/257',
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts/257': {
+        id: 257,
+        comments: {
+          itemz: [
+            {
+              href: 'http://example.com/comments/123',
+            },
+            {
+              href: 'http://example.com/comments/124',
+            },
+          ],
+        },
+        _meta: {
+          self: 'http://example.com/posts/257',
+        },
+      },
+      'http://example.com/comments/123': {
+        id: 123,
+        content: 'great post',
+        _meta: {
+          self: 'http://example.com/comments/123',
+        },
+      },
+      'http://example.com/comments/124': {
+        id: 124,
+        content: 'thanks',
+        _meta: {
+          self: 'http://example.com/comments/124',
+        },
+      },
+    };
+
+    const result = normalize(json, { embeddedListName: 'itemz' });
+
+    expect(result).to.deep.equal(output);
+  });
+
   it('keys of embedded are camelized', () => {
     const json = {
       id: 2620,

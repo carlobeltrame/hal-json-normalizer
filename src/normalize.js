@@ -52,10 +52,15 @@ function extractSingleEmbed(embed, ret, opts) {
 }
 
 function extractEmbeds(embeds, ret, opts) {
-  if (!isArray(embeds)) {
-    return extractSingleEmbed(embeds, ret, opts);
+  if (isArray(embeds)) {
+    if (opts.embeddedListName) {
+      return {
+        [opts.embeddedListName]: embeds.map((embed) => extractSingleEmbed(embed, ret, opts)),
+      };
+    }
+    return embeds.map((embed) => extractSingleEmbed(embed, ret, opts));
   }
-  return embeds.map((embed) => extractSingleEmbed(embed, ret, opts));
+  return extractSingleEmbed(embeds, ret, opts);
 }
 
 function extractAllEmbedded(json, uri, opts) {
