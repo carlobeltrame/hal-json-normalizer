@@ -51,16 +51,11 @@ function extractSingleEmbed(embed, ret, opts) {
   return normalizeLink(cloneDeep(((embed || {})._links || {}).self) || null, opts.normalizeUri);
 }
 
-function extractEmbeds(key, embeds, ret, opts) {
-  if (isArray(embeds)) {
-    if (opts.embeddedListName && key !== opts.embeddedListName) {
-      return {
-        [opts.embeddedListName]: embeds.map((embed) => extractSingleEmbed(embed, ret, opts)),
-      };
-    }
-    return embeds.map((embed) => extractSingleEmbed(embed, ret, opts));
+function extractEmbeds(embeds, ret, opts) {
+  if (!isArray(embeds)) {
+    return extractSingleEmbed(embeds, ret, opts);
   }
-  return extractSingleEmbed(embeds, ret, opts);
+  return embeds.map((embed) => extractSingleEmbed(embed, ret, opts));
 }
 
 function extractAllEmbedded(json, uri, opts) {
@@ -70,10 +65,10 @@ function extractAllEmbedded(json, uri, opts) {
   keys(json._embedded).forEach((key) => {
     if (camelizeKeys) {
       ret[uri][camelCase(key)] = camelizeNestedKeys(
-        extractEmbeds(camelCase(key), json._embedded[key], ret, opts),
+        extractEmbeds(json._embedded[key], ret, opts),
       );
     } else {
-      ret[uri][key] = extractEmbeds(key, json._embedded[key], ret, opts);
+      ret[uri][key] = extractEmbeds(json._embedded[key], ret, opts);
     }
   });
 

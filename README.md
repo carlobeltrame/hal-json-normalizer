@@ -222,10 +222,15 @@ console.log(normalize(json, { metaKey: '__metadata' }));
 ```
 
 
-## Name for embedded lists
+## Embedded lists with a self link
 
-In some applications, you might want to make standalone collections with their own URI indistinguishable from embedded collections. However, in HAL, standalone collections that are retrieved under a certain URI usually contain a property called `items` or similar, which holds the actual array of collection members. To imitate this in embedded collections, you can have them automatically be wrapped in a similar `items` property (if they aren't already) using the `embeddedCollectionName` option.
-> Caution: The value of embeddedListName should be a reserved word in your API. In particular, this tool can not currently handle an embedded collection with the relation name `items` correctly when embeddedListName is also `items`.
+In some cases your API might need to embed a list (for performance reasons), but still communicate a self link under which the list can be separately re-fetched. This is supported by doing the following:
+* In the API, embed the list normally under some relation key (e.g. `comments`) and also add a link with the same relation key to `_links`
+* Set the `embeddedStandaloneListKey` option to some string, e.g. `'items'`
+
+The list will then be normalized as a separate (standalone) object, containing just the list under the key from the option (`items`).
+
+> Note: If you don't specify the `embeddedStandaloneListKey` option and the API sends the same relation key in `_embedded` and in `_links`, the data from `_embedded` will take preference, since that can potentially contain more information.
 
 ```JavaScript
 const json = {
@@ -253,6 +258,9 @@ const json = {
     ],
   },
   _links: {
+    comments: {
+      href: 'https://my.api.com/comments?someEntity=1',
+    },
     self: {
       href: 'https://my.api.com/someEntity/1',
     },
@@ -293,23 +301,29 @@ console.log(normalize(json));
 }
 */
 
-console.log(normalize(json, { embeddedListName: 'items' }));
+console.log(normalize(json, { embeddedStandaloneListKey: 'items' }));
 /* Output:
 {
   'https://my.api.com/someEntity/1': {
     id: 1,
     comments: {
-      items: [
-        {
-          href: 'https://my.api.com/comments/53204',
-        },
-        {
-          href: 'https://my.api.com/comments/1395',
-        },
-      ],
-      _meta: {
-        self: 'https://my.api.com/someEntity/1',
-      ],
+      href: 'https://my.api.com/comments?someEntity=1',
+    },
+    _meta: {
+      self: 'https://my.api.com/someEntity/1',
+    },
+  },
+  'https://my.api.com/comments?someEntity=1': {
+    items: [
+      {
+        href: 'https://my.api.com/comments/53204',
+      },
+      {
+        href: 'https://my.api.com/comments/1395',
+      },
+    ],
+    _meta: {
+      self: 'https://my.api.com/comments?someEntity=1',
     },
   },
   'https://my.api.com/comments/53204': {
