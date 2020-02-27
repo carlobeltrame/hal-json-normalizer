@@ -96,6 +96,26 @@ function extractAllLinks(json, uri, opts) {
   return ret;
 }
 
+function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
+  const result = {};
+  merge(result, links);
+  merge(result, embedded);
+
+  keys(embedded).forEach((uri) => {
+    keys(embedded[uri]).forEach((rel) => {
+      if (uri in links && rel in links[uri]) {
+        result[uri][rel] = links[uri][rel];
+        result[links[uri][rel].href] = {
+          [opts.embeddedStandaloneListKey]: embedded[uri][rel],
+          [opts.metaKey]: { self: links[uri][rel].href },
+        };
+      }
+    });
+  });
+
+  return result;
+}
+
 extractResource = (json, opts) => {
   const { camelizeKeys, normalizeUri, metaKey } = opts;
 
@@ -118,8 +138,15 @@ extractResource = (json, opts) => {
     }
   });
 
-  merge(ret, extractAllLinks(json, uri, opts));
-  merge(ret, extractAllEmbedded(json, uri, opts));
+  const embedded = extractAllEmbedded(json, uri, opts);
+  const links = extractAllLinks(json, uri, opts);
+
+  if (opts.embeddedStandaloneListKey) {
+    merge(ret, mergeEmbeddedStandaloneCollections(embedded, links, opts));
+  } else {
+    merge(ret, extractAllLinks(json, uri, opts));
+    merge(ret, extractAllEmbedded(json, uri, opts));
+  }
 
   ret[uri][metaKey] = ret[uri][metaKey] || {};
   ret[uri][metaKey].self = uri;

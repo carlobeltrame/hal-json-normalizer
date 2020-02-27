@@ -644,7 +644,7 @@ describe('embedded', () => {
             },
             _links: {
               self: {
-                href: 'http://example.com/posts/2620/questions',
+                href: 'http://example.com/posts/2620/questions/295',
               },
             },
           },
@@ -663,18 +663,18 @@ describe('embedded', () => {
         text: 'hello',
         questions: [
           {
-            href: 'http://example.com/posts/2620/questions',
+            href: 'http://example.com/posts/2620/questions/295',
           },
         ],
         _meta: {
           self: 'http://example.com/posts/2620',
         },
       },
-      'http://example.com/posts/2620/questions': {
+      'http://example.com/posts/2620/questions/295': {
         id: 295,
         text: 'Why?',
         _meta: {
-          self: 'http://example.com/posts/2620/questions',
+          self: 'http://example.com/posts/2620/questions/295',
           expiresAt: 1513868982,
         },
       },
@@ -682,6 +682,71 @@ describe('embedded', () => {
     const result = normalize(json1);
 
     expect(result).to.deep.equal(output1);
+  });
+
+  it('embedded standalone list', () => {
+    const json = {
+      id: '2620',
+      text: 'hello',
+      _embedded: {
+        questions: [
+          {
+            id: 295,
+            text: 'Why?',
+            _meta: {
+              expires_at: 1513868982,
+            },
+            _links: {
+              self: {
+                href: 'http://example.com/questions/295',
+              },
+            },
+          },
+        ],
+      },
+      _links: {
+        questions: {
+          href: 'http://example.com/questions?post=2620',
+        },
+        self: {
+          href: 'http://example.com/posts/2620',
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts/2620': {
+        id: '2620',
+        text: 'hello',
+        questions: {
+          href: 'http://example.com/questions?post=2620',
+        },
+        _meta: {
+          self: 'http://example.com/posts/2620',
+        },
+      },
+      'http://example.com/questions?post=2620': {
+        items: [
+          {
+            href: 'http://example.com/questions/295',
+          }
+        ],
+        _meta: {
+          self: 'http://example.com/questions?post=2620',
+        },
+      },
+      'http://example.com/questions/295': {
+        id: 295,
+        text: 'Why?',
+        _meta: {
+          self: 'http://example.com/questions/295',
+          expiresAt: 1513868982,
+        },
+      },
+    };
+    const result = normalize(json, { embeddedStandaloneListKey: 'items' });
+
+    expect(result).to.deep.equal(output);
   });
 });
 
