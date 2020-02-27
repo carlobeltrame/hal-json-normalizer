@@ -1,3 +1,6 @@
+### Unreleased
+- When a relation name is present in both embedded and links, embedded will take precedence, because it may contain more information.
+
 ### v 2.1.2 (30 Jan 2020)
 - Fix standalone lists when embeddedListName is set
 

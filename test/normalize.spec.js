@@ -1343,6 +1343,54 @@ describe('complex', () => {
 
     expect(result).to.deep.eql(output2);
   });
+
+  it('on conflicting relation names, embedded wins', () => {
+    const json = {
+      id: 29,
+      _embedded: {
+        author: {
+          id: 1,
+          slug: 'superyuri',
+          _links: {
+            self: {
+              href: 'http://example.com/users/1',
+            },
+          },
+        },
+      },
+      _links: {
+        self: {
+          href: 'http://example.com/questions/29',
+        },
+        author: {
+          href: 'http://example.com/users/2'
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/questions/29': {
+        id: 29,
+        author: {
+          href: 'http://example.com/users/1',
+        },
+        _meta: {
+          self: 'http://example.com/questions/29',
+        },
+      },
+      'http://example.com/users/1': {
+        id: 1,
+        slug: 'superyuri',
+        _meta: {
+          self: 'http://example.com/users/1',
+        },
+      },
+    };
+
+    const result = normalize(json, { camelizeKeys: false });
+
+    expect(result).to.deep.eql(output);
+  });
 });
 
 describe('base URI removal', () => {

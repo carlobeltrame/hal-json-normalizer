@@ -118,8 +118,8 @@ extractResource = (json, opts) => {
     }
   });
 
-  merge(ret, extractAllEmbedded(json, uri, opts));
   merge(ret, extractAllLinks(json, uri, opts));
+  merge(ret, extractAllEmbedded(json, uri, opts));
 
   ret[uri][metaKey] = ret[uri][metaKey] || {};
   ret[uri][metaKey].self = uri;
