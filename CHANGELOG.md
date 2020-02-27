@@ -1,4 +1,4 @@
-### Unreleased
+### v 3.0.0 (27 Feb 2020)
 - When a relation name is present in both embedded and links, embedded will take precedence, because it may contain more information.
 - Remove embeddedListName option again because it is currently unused, incomplete and creates many corner cases
 - Add embeddedStandaloneListKey option to enable embedded collections to have a self link
