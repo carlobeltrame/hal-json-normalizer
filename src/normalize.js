@@ -92,15 +92,15 @@ function extractAllLinks(json, uri, opts) {
 }
 
 function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
-  const result = {};
-  merge(result, links);
-  merge(result, embedded);
+  const ret = {};
+  merge(ret, links);
+  merge(ret, embedded);
 
   keys(embedded).forEach((uri) => {
     keys(embedded[uri]).forEach((rel) => {
       if (uri in links && rel in links[uri]) {
-        result[uri][rel] = links[uri][rel];
-        result[links[uri][rel].href] = {
+        ret[uri][rel] = links[uri][rel];
+        ret[links[uri][rel].href] = {
           [opts.embeddedStandaloneListKey]: embedded[uri][rel],
           [opts.metaKey]: { self: links[uri][rel].href },
         };
@@ -108,7 +108,7 @@ function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
     });
   });
 
-  return result;
+  return ret;
 }
 
 extractResource = (json, opts) => {

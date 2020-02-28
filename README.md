@@ -11,6 +11,7 @@ Utility to normalize HAL JSON data for Vuex applications.
 
 hal-json-normalizer helps [HAL JSON](https://tools.ietf.org/html/draft-kelly-json-hal-08) APIs and [Vuex](https://vuex.vuejs.org/) work together.
 Unlike [normalizr](https://github.com/paularmstrong/normalizr), hal-json-normalizer supports the HAL+JSON specification, which means that you don't have to care about schemas.
+This library also supports [templated links](https://tools.ietf.org/html/draft-kelly-json-hal-00#section-5).
 
 # Install
 
@@ -44,6 +45,10 @@ const json = {
     author: {
       href: 'https://my.api.com/users/1024',
     },
+    questions: {
+      href: 'https://my.api.com/questions{/id}',
+      templated: true,
+    },
   },
 };
 
@@ -58,6 +63,10 @@ console.log(normalize(json));
     },
     author: {
       href: 'https://my.api.com/users/1024',
+    },
+    questions: {
+      href: 'https://my.api.com/questions{/id}',
+      templated: true,
     },
     _meta: {
       self: 'https://my.api.com/answers/2620',

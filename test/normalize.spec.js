@@ -943,6 +943,40 @@ describe('links', () => {
 
     expect(result).to.deep.equal(output2);
   });
+
+  it('supports templated links', () => {
+    const json = {
+      id: 2620,
+      text: 'hello',
+      _links: {
+        self: {
+          href: 'http://example.com/api/v1/post/2620',
+        },
+        posts: {
+          href: 'http://example.com/api/v1/post{/id}',
+          templated: true,
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/api/v1/post/2620': {
+        id: 2620,
+        text: 'hello',
+        posts: {
+          href: 'http://example.com/api/v1/post{/id}',
+          templated: true,
+        },
+        _meta: {
+          self: 'http://example.com/api/v1/post/2620',
+        },
+      },
+    };
+
+    const result = normalize(json);
+
+    expect(result).to.deep.equal(output);
+  });
 });
 
 describe('references (resources with nothing but a self link)', () => {
@@ -1186,6 +1220,10 @@ describe('complex', () => {
           href: 'http://example.com/blocks/2454',
         },
       ],
+      questions: {
+        href: 'http://example.com/questions{/id}',
+        templated: true,
+      },
     },
   };
 
@@ -1211,6 +1249,10 @@ describe('complex', () => {
           href: 'http://example.com/blocks/2454',
         },
       ],
+      questions: {
+        href: 'http://example.com/questions{/id}',
+        templated: true,
+      },
       _meta: {
         self: 'http://example.com/questions/29',
         expiresAt: 1513868982,
@@ -1247,6 +1289,10 @@ describe('complex', () => {
           href: 'http://example.com/blocks/2454',
         },
       ],
+      questions: {
+        href: 'http://example.com/questions{/id}',
+        templated: true,
+      },
       _meta: {
         self: 'http://example.com/questions/29',
         expires_at: 1513868982,
