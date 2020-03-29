@@ -8,6 +8,7 @@ import merge from 'lodash/merge';
 
 function normalizeLink(link, normalizeUri) {
   if (!link || !link.href) return link;
+  if (link.templated) return link;
   return { ...link, href: normalizeUri(link.href) };
 }
 
