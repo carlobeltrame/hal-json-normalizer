@@ -129,6 +129,8 @@ console.log(normalize(json, { camelizeKeys: false }));
 
 In many cases, all API URIs will start with the same prefix, or you may want to treat different orderings of query parameters as the same endpoint, etc. You can specify a normalization strategy for all identifiers by passing a function to the `normalizeUri` option.
 
+> Note: [Templated links](https://tools.ietf.org/html/draft-kelly-json-hal-08#section-5.1) are excluded from normalization, because the URIs inside are actually [URI templates](https://tools.ietf.org/html/rfc6570), not normal URIs. Templated links look like this: `{ href: 'https://so.me/where{/id}', templated: true }`
+
 ```JavaScript
 const json = {
   id: 1,
