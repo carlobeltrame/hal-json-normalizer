@@ -977,6 +977,40 @@ describe('links', () => {
 
     expect(result).to.deep.equal(output);
   });
+
+  it('supports templated links with query', () => {
+    const json = {
+      id: 2620,
+      text: 'hello',
+      _links: {
+        self: {
+          href: 'http://example.com/api/v1/post/2620',
+        },
+        posts: {
+          href: 'http://example.com/api/v1/post{/id}{?q}',
+          templated: true,
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/api/v1/post/2620': {
+        id: 2620,
+        text: 'hello',
+        posts: {
+          href: 'http://example.com/api/v1/post{/id}{?q}',
+          templated: true,
+        },
+        _meta: {
+          self: 'http://example.com/api/v1/post/2620',
+        },
+      },
+    };
+
+    const result = normalize(json);
+
+    expect(result).to.deep.equal(output);
+  });
 });
 
 describe('references (resources with nothing but a self link)', () => {
