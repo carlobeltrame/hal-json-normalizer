@@ -1,5 +1,8 @@
 ### Unreleased
+
+### v 3.0.1 (31 Mar 2020)
 - Document the support for templated links according to the HAL JSON specification
+- Do not normalize templated links (thanks to @pmattmann)
 
 ### v 3.0.0 (27 Feb 2020)
 - When a relation name is present in both embedded and links, embedded will take precedence, because it may contain more information.
