@@ -1735,4 +1735,38 @@ describe('URI handling', () => {
 
     expect(result).to.deep.equal(output);
   });
+
+  it('doesn\'t normalize templated links', () => {
+    const json = {
+      id: 2620,
+      text: 'hello',
+      _links: {
+        self: {
+          href: 'http://example.com/api/v1/post/2620',
+        },
+        posts: {
+          href: 'http://example.com/api/v1/post{/id}{?q}',
+          templated: true,
+        },
+      },
+    };
+
+    const output = {
+      '/v1/post/2620': {
+        id: 2620,
+        text: 'hello',
+        posts: {
+          href: 'http://example.com/api/v1/post{/id}{?q}',
+          templated: true,
+        },
+        _meta: {
+          self: '/v1/post/2620',
+        },
+      },
+    };
+
+    const result = normalize(json, { normalizeUri: (uri) => uri.replace(/^http:\/\/example.com\/api/, '') });
+
+    expect(result).to.deep.equal(output);
+  });
 });
