@@ -39,3 +39,6 @@ dist
 
 #PhpStorm and WebStorm settings folder
 .idea
+
+# np publishing tool
+.np-config.js
