@@ -1091,6 +1091,40 @@ describe('references (resources with nothing but a self link)', () => {
 
     expect(result).to.deep.equal(output3);
   });
+
+  it('handle null references', () => {
+    const json3 = {
+      _embedded: {
+        question: null,
+      },
+      _links: {
+        prev: {
+          href: null,
+        },
+        self: {
+          href: 'http://example.com/entity/1',
+        },
+      },
+    };
+
+    const output4 = {
+      'http://example.com/entity/1': {
+        prev: {
+          href: null,
+        },
+        question: null,
+        _meta: {
+          self: 'http://example.com/entity/1',
+        },
+      },
+    };
+
+    const result = normalize(json3, {
+      filterReferences: true,
+    });
+
+    expect(result).to.deep.equal(output4);
+  });
 });
 
 describe('meta', () => {
