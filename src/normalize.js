@@ -40,7 +40,7 @@ function hasSingleKey(object, key) {
 }
 
 function isReference(value) {
-  return hasSingleKey(value, '_links') && hasSingleKey(value._links, 'self');
+  return typeof value === 'object' && value !== null && hasSingleKey(value, '_links') && hasSingleKey(value._links, 'self');
 }
 
 let extractResource;
