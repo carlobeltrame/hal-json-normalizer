@@ -1,5 +1,8 @@
 ### Unreleased
 
+### v 3.0.3 (09 Dec 2020)
+- Handle embedded `null` values [#6](https://github.com/carlobeltrame/hal-json-normalizer/pull/6) (thanks to @westende)
+
 ### v 3.0.1 (31 Mar 2020)
 - Document the support for templated links according to the HAL JSON specification
 - Do not normalize templated links (thanks to @pmattmann)
