@@ -7,5 +7,5 @@ test
 .eslintrc
 .idea
 .nyc_output
-.travis.yml
+.github
 webpack.config.js
