@@ -1,5 +1,8 @@
 ### Unreleased
-- Drop support for Node.js versions earlier than 10.13.
+
+### v 4.0.0 (10 Jan 2021)
+- **Breaking**: Drop support for Node.js versions earlier than 10.13.
+- Update all dependencies to their latest major versions.
 
 ### v 3.0.5 (10 Jan 2021)
 - Update all dependencies to the latest versions. This is the last release before dropping support for node v8.
