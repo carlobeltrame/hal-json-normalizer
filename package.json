@@ -42,7 +42,7 @@
     "eslint-config-airbnb-base": "14.2.1",
     "eslint-loader": "4.0.2",
     "eslint-plugin-import": "2.22.1",
-    "mocha": "6.2.3",
+    "mocha": "8.2.1",
     "nyc": "15.1.0",
     "rimraf": "3.0.2",
     "webpack": "4.45.0",
