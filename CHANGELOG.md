@@ -1,5 +1,8 @@
 ### Unreleased
 
+### v 3.0.5 (10 Jan 2021)
+- Update all dependencies to the latest versions. This is the last release before dropping support for node v8.
+
 ### v 3.0.3 (09 Dec 2020)
 - Handle embedded `null` values [#6](https://github.com/carlobeltrame/hal-json-normalizer/pull/6) (thanks to @westende)
 
