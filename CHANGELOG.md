@@ -1,5 +1,8 @@
 ### Unreleased
 
+### v 4.0.1 (11 Feb 2021)
+- Update all dependencies to their latest versions.
+
 ### v 4.0.0 (10 Jan 2021)
 - **Breaking**: Drop support for Node.js versions earlier than 10.13.
 - Update all dependencies to their latest major versions.
