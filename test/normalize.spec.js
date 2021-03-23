@@ -593,7 +593,98 @@ describe('embedded', () => {
         items: [
           {
             href: 'http://example.com/questions/295',
-          }
+          },
+        ],
+        _meta: {
+          self: 'http://example.com/questions?post=2620',
+        },
+      },
+      'http://example.com/questions/295': {
+        id: 295,
+        text: 'Why?',
+        _meta: {
+          self: 'http://example.com/questions/295',
+          expiresAt: 1513868982,
+        },
+      },
+    };
+    const result = normalize(json, { embeddedStandaloneListKey: 'items' });
+
+    expect(result).to.deep.equal(output);
+  });
+
+  it('nested embedded standalone lists', () => {
+    const json = {
+      id: '1111',
+      title: 'My questionnaire',
+      _embedded: {
+        posts: [{
+          id: '2620',
+          text: 'hello',
+          _embedded: {
+            questions: [
+              {
+                id: 295,
+                text: 'Why?',
+                _meta: {
+                  expires_at: 1513868982,
+                },
+                _links: {
+                  self: {
+                    href: 'http://example.com/questions/295',
+                  },
+                },
+              },
+            ],
+          },
+          _links: {
+            questions: {
+              href: 'http://example.com/questions?post=2620',
+            },
+            self: {
+              href: 'http://example.com/posts/2620',
+            },
+          },
+        }],
+      },
+      _links: {
+        self: { href: 'http://example.com/questionnaires/1111' },
+        posts: { href: 'http://example.com/posts?questionnaire=1111' },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts?questionnaire=1111': {
+        _meta: { self: 'http://example.com/posts?questionnaire=1111' },
+        items: [{
+          href: 'http://example.com/posts/2620',
+        }],
+      },
+      'http://example.com/posts/2620': {
+        id: '2620',
+        text: 'hello',
+        questions: {
+          href: 'http://example.com/questions?post=2620',
+        },
+        _meta: {
+          self: 'http://example.com/posts/2620',
+        },
+      },
+      'http://example.com/questionnaires/1111': {
+        id: '1111',
+        title: 'My questionnaire',
+        posts: {
+          href: 'http://example.com/posts?questionnaire=1111',
+        },
+        _meta: {
+          self: 'http://example.com/questionnaires/1111',
+        },
+      },
+      'http://example.com/questions?post=2620': {
+        items: [
+          {
+            href: 'http://example.com/questions/295',
+          },
         ],
         _meta: {
           self: 'http://example.com/questions?post=2620',
@@ -1406,7 +1497,7 @@ describe('complex', () => {
           href: 'http://example.com/questions/29',
         },
         author: {
-          href: 'http://example.com/users/2'
+          href: 'http://example.com/users/2',
         },
       },
     };
