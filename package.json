@@ -1,6 +1,6 @@
 {
   "name": "hal-json-normalizer",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "HAL JSON API response normalizer",
   "main": "dist/bundle.js",
   "scripts": {
