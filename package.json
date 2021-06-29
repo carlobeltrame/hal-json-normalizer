@@ -44,7 +44,7 @@
     "mocha": "8.4.0",
     "nyc": "15.1.0",
     "rimraf": "3.0.2",
-    "webpack": "5.41.0",
+    "webpack": "5.41.1",
     "webpack-cli": "4.7.2",
     "webpack-node-externals": "3.0.0"
   },
