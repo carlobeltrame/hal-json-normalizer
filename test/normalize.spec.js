@@ -1525,6 +1525,75 @@ describe('complex', () => {
 
     expect(result).to.deep.eql(output);
   });
+
+  it('can handle embedded non-collection entities with additional link', () => {
+    const json3 = {
+      _links: {
+        self: {
+          href: '/camp_collaborations/5f8a9480c7a7',
+        },
+        user: {
+          href: '/users/16fbb7665f7c',
+        },
+        camp: {
+          href: '/camps/562c83359b44',
+        },
+      },
+      _embedded: {
+        camp: {
+          _links: {
+            self: {
+              href: '/camps/562c83359b44',
+            },
+          },
+          title: 'enim',
+        },
+        user: {
+          _links: {
+            self: {
+              href: '/users/16fbb7665f7c',
+            },
+          },
+          displayName: 'voluptates',
+        },
+      },
+      id: '5f8a9480c7a7',
+    };
+
+    const output3 = {
+      '/camp_collaborations/5f8a9480c7a7': {
+        id: '5f8a9480c7a7',
+        user: {
+          href: '/users/16fbb7665f7c',
+        },
+        camp: {
+          href: '/camps/562c83359b44',
+        },
+        _meta: {
+          self: '/camp_collaborations/5f8a9480c7a7',
+        },
+      },
+      '/camps/562c83359b44': {
+        _meta: {
+          self: '/camps/562c83359b44',
+        },
+        title: 'enim',
+      },
+      '/users/16fbb7665f7c': {
+        _meta: {
+          self: '/users/16fbb7665f7c',
+        },
+        displayName: 'voluptates',
+      },
+    };
+
+    const result = normalize(json3, {
+      camelizeKeys: false,
+      embeddedStandaloneListKey: 'items',
+    });
+
+    expect(result).to.deep.eql(output3);
+  });
 });
 
 describe('base URI removal', () => {

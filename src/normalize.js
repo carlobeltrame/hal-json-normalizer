@@ -99,7 +99,7 @@ function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
 
   keys(embedded).forEach((uri) => {
     keys(embedded[uri]).forEach((rel) => {
-      if (uri in links && rel in links[uri]) {
+      if (Array.isArray(embedded[uri][rel]) && uri in links && rel in links[uri]) {
         ret[uri][rel] = links[uri][rel];
         ret[links[uri][rel].href] = {
           [opts.embeddedStandaloneListKey]: embedded[uri][rel],

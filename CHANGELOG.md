@@ -1,5 +1,8 @@
 ### Unreleased
 
+### v 4.0.3 (18 Oct 2021)
+- Fix a bug with embedded standalone collection detection (thanks to @BacLuc for reporting)
+
 ### v 4.0.1 (11 Feb 2021)
 - Update all dependencies to their latest versions.
 
