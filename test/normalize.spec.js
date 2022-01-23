@@ -842,6 +842,7 @@ describe('embedded', () => {
         text: 'hello',
         questions: {
           href: 'http://example.com/posts/2620#questions',
+          virtual: true,
         },
         _meta: {
           self: 'http://example.com/posts/2620',
@@ -953,6 +954,7 @@ describe('embedded', () => {
         text: 'hello',
         questions: {
           href: 'http://example.com/posts/2620#questions',
+          virtual: true,
         },
         _meta: {
           self: 'http://example.com/posts/2620',
