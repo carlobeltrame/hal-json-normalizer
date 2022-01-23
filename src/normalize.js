@@ -1,8 +1,6 @@
-import camelCase from 'lodash/camelCase';
-import isArray from 'lodash/isArray';
-import cloneDeep from 'lodash/cloneDeep';
-import keys from 'lodash/keys';
-import merge from 'lodash/merge';
+import {
+  camelCase, isArray, cloneDeep, keys, merge, difference,
+} from 'lodash';
 
 /* eslint no-underscore-dangle: ["error", { "allow": ["_links", "_embedded"] }] */
 
@@ -96,12 +94,28 @@ function extractAllLinks(json, uri, opts) {
   return ret;
 }
 
+function extractToVirtualKey(uri, rel, content, contentKey) {
+  const ret = {};
+  const virtualKey = `${uri}#${rel}`;
+  ret[virtualKey] = {
+    [contentKey]: content,
+  };
+
+  ret[uri] = {};
+  ret[uri][rel] = {
+    href: virtualKey,
+    virtual: true,
+  };
+  return ret;
+}
+
 function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
   const ret = {};
   merge(ret, links);
   merge(ret, embedded);
 
   keys(embedded).forEach((uri) => {
+    // check all embedded properties for embedded collections
     keys(embedded[uri]).forEach((rel) => {
       if (Array.isArray(embedded[uri][rel])) {
         // standalone link provided (store embedded list as standalone link)
@@ -111,18 +125,34 @@ function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
             [opts.embeddedStandaloneListKey]: embedded[uri][rel],
             [opts.metaKey]: { self: links[uri][rel].href },
           };
-        } else if (opts.embeddedStandaloneListVirtualKeys) {
+        } else if (opts.embeddedStandaloneListVirtualKeys
+          && rel !== opts.embeddedStandaloneListKey) {
           // no standalone link provided --> generate virtual key
-          const virtualKey = `${uri}#${rel}`;
-          ret[virtualKey] = {
-            [opts.embeddedStandaloneListKey]: embedded[uri][rel],
-          };
-          ret[uri][rel] = {
-            href: virtualKey,
-          };
+          delete ret[uri][rel];
+          merge(
+            ret,
+            extractToVirtualKey(uri, rel, embedded[uri][rel], opts.embeddedStandaloneListKey),
+          );
         }
       }
     });
+
+    // also check remaining link properties to search for a possible collection
+    // which is not embedded
+    if (opts.embeddedStandaloneListVirtualKeys) {
+      difference(
+        keys(links[uri]),
+        [...keys(embedded[uri]), opts.embeddedStandaloneListKey],
+      ).forEach((rel) => {
+        if (Array.isArray(links[uri][rel])) {
+          delete ret[uri][rel];
+          merge(
+            ret,
+            extractToVirtualKey(uri, rel, links[uri][rel], opts.embeddedStandaloneListKey),
+          );
+        }
+      });
+    }
   });
 
   return ret;
