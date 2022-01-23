@@ -43,6 +43,10 @@ function isReference(value) {
   return typeof value === 'object' && value !== null && hasSingleKey(value, '_links') && hasSingleKey(value._links, 'self');
 }
 
+function isSingleLink(value) {
+  return typeof value === 'object' && value !== null && hasSingleKey(value, 'href');
+}
+
 let extractResource;
 
 function extractSingleEmbed(embed, ret, opts) {
@@ -100,11 +104,23 @@ function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
   keys(embedded).forEach((uri) => {
     keys(embedded[uri]).forEach((rel) => {
       if (Array.isArray(embedded[uri][rel]) && uri in links && rel in links[uri]) {
-        ret[uri][rel] = links[uri][rel];
-        ret[links[uri][rel].href] = {
-          [opts.embeddedStandaloneListKey]: embedded[uri][rel],
-          [opts.metaKey]: { self: links[uri][rel].href },
-        };
+        // standalone link provided (store embedded list as standalone link)
+        if (isSingleLink(links[uri][rel])) {
+          ret[uri][rel] = links[uri][rel];
+          ret[links[uri][rel].href] = {
+            [opts.embeddedStandaloneListKey]: embedded[uri][rel],
+            [opts.metaKey]: { self: links[uri][rel].href },
+          };
+        } else if (opts.embeddedStandaloneListVirtualKeys) {
+          // no standalone link provided --> generate virtual key
+          const virtualKey = `${uri}#${rel}`;
+          ret[virtualKey] = {
+            [opts.embeddedStandaloneListKey]: embedded[uri][rel],
+          };
+          ret[uri][rel] = {
+            href: virtualKey,
+          };
+        }
       }
     });
   });

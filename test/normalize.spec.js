@@ -613,6 +613,47 @@ describe('embedded', () => {
     expect(result).to.deep.equal(output);
   });
 
+  it('can handle empty embedded standalone list', () => {
+    const json = {
+      id: '2620',
+      text: 'hello',
+      _embedded: {
+        questions: [],
+      },
+      _links: {
+        questions: {
+          href: 'http://example.com/questions?post=2620',
+        },
+        self: {
+          href: 'http://example.com/posts/2620',
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts/2620': {
+        id: '2620',
+        text: 'hello',
+        questions: {
+          href: 'http://example.com/questions?post=2620',
+        },
+        _meta: {
+          self: 'http://example.com/posts/2620',
+        },
+      },
+      'http://example.com/questions?post=2620': {
+        items: [
+        ],
+        _meta: {
+          self: 'http://example.com/questions?post=2620',
+        },
+      },
+    };
+    const result = normalize(json, { embeddedStandaloneListKey: 'items' });
+
+    expect(result).to.deep.equal(output);
+  });
+
   it('nested embedded standalone lists', () => {
     const json = {
       id: '1111',
@@ -700,6 +741,165 @@ describe('embedded', () => {
       },
     };
     const result = normalize(json, { embeddedStandaloneListKey: 'items' });
+
+    expect(result).to.deep.equal(output);
+  });
+
+  it('embedded list without standalone link ignores link array', () => {
+    const json = {
+      id: '2620',
+      text: 'hello',
+      _embedded: {
+        questions: [
+          {
+            id: 295,
+            text: 'Why?',
+            _meta: {
+              expires_at: 1513868982,
+            },
+            _links: {
+              self: {
+                href: 'http://example.com/questions/295',
+              },
+            },
+          },
+        ],
+      },
+      _links: {
+        questions: [
+          {
+            href: 'http://example.com/questions/295',
+          },
+        ],
+        self: {
+          href: 'http://example.com/posts/2620',
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts/2620': {
+        id: '2620',
+        text: 'hello',
+        questions: [
+          {
+            href: 'http://example.com/questions/295',
+          },
+        ],
+        _meta: {
+          self: 'http://example.com/posts/2620',
+        },
+      },
+      'http://example.com/questions/295': {
+        id: 295,
+        text: 'Why?',
+        _meta: {
+          self: 'http://example.com/questions/295',
+          expiresAt: 1513868982,
+        },
+      },
+    };
+    const result = normalize(json, { embeddedStandaloneListKey: 'items' });
+
+    expect(result).to.deep.equal(output);
+  });
+
+  it('embedded standalone list without standalone link generates virtual key', () => {
+    const json = {
+      id: '2620',
+      text: 'hello',
+      _embedded: {
+        questions: [
+          {
+            id: 295,
+            text: 'Why?',
+            _meta: {
+              expires_at: 1513868982,
+            },
+            _links: {
+              self: {
+                href: 'http://example.com/questions/295',
+              },
+            },
+          },
+        ],
+      },
+      _links: {
+        questions: [
+          {
+            href: 'http://example.com/questions/295',
+          },
+        ],
+        self: {
+          href: 'http://example.com/posts/2620',
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts/2620': {
+        id: '2620',
+        text: 'hello',
+        questions: {
+          href: 'http://example.com/posts/2620#questions',
+        },
+        _meta: {
+          self: 'http://example.com/posts/2620',
+        },
+      },
+      'http://example.com/posts/2620#questions': {
+        items: [
+          {
+            href: 'http://example.com/questions/295',
+          },
+        ],
+      },
+      'http://example.com/questions/295': {
+        id: 295,
+        text: 'Why?',
+        _meta: {
+          self: 'http://example.com/questions/295',
+          expiresAt: 1513868982,
+        },
+      },
+    };
+    const result = normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true });
+
+    expect(result).to.deep.equal(output);
+  });
+
+  it('can handle empty embedded collection with virtual keys', () => {
+    const json = {
+      id: '2620',
+      text: 'hello',
+      _embedded: {
+        questions: [],
+      },
+      _links: {
+        questions: [],
+        self: {
+          href: 'http://example.com/posts/2620',
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts/2620': {
+        id: '2620',
+        text: 'hello',
+        questions: {
+          href: 'http://example.com/posts/2620#questions',
+        },
+        _meta: {
+          self: 'http://example.com/posts/2620',
+        },
+      },
+      'http://example.com/posts/2620#questions': {
+        items: [
+        ],
+      },
+    };
+    const result = normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true });
 
     expect(result).to.deep.equal(output);
   });
