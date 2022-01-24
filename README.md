@@ -359,7 +359,7 @@ console.log(normalize(json, { embeddedStandaloneListKey: 'items' }));
 
 For consistency, you might want to always have related collections referenceable, even if the API does not provide any single link under which the collection could be accessed in isolation.
 This library gives you the option to generate virtual keys (virtual URIs, virtual self links) for all embedded and linked arrays that don't already have a self link.
-To activate, set `embeddedStandaloneListVirtualKeys` to `true`.
+To activate, set `virtualSelfLinks` to `true`.
 
 > Note: If the API also sends a single link for an embedded collection, this single link will be used instead of any virtual (generated) key, since that link will be more accurate and more useful to e.g. reload the collection from the API in isolation.
 
@@ -402,7 +402,7 @@ const json = {
   },
 };
 
-console.log(normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true }));
+console.log(normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true }));
 /* Output:
 {
   'https://my.api.com/someEntity/1': {

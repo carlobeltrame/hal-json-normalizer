@@ -132,8 +132,7 @@ function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
             [opts.embeddedStandaloneListKey]: embedded[uri][rel],
             [opts.metaKey]: { self: links[uri][rel].href },
           };
-        } else if (opts.embeddedStandaloneListVirtualKeys
-          && rel !== opts.embeddedStandaloneListKey) {
+        } else if (opts.virtualSelfLinks && rel !== opts.embeddedStandaloneListKey) {
           // no standalone link provided --> generate virtual key
           delete ret[uri][rel];
           merge(
@@ -146,7 +145,7 @@ function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
 
     // also check remaining link properties to search for a possible collection
     // which is not embedded
-    if (opts.embeddedStandaloneListVirtualKeys) {
+    if (opts.virtualSelfLinks) {
       difference(
         keys(links[uri]),
         [...keys(embedded[uri]), opts.embeddedStandaloneListKey],

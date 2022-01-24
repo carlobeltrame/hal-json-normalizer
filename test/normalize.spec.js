@@ -869,7 +869,7 @@ describe('embedded', () => {
           },
         },
       };
-      const result = normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true });
+      const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true });
 
       expect(result).to.deep.equal(output);
     });
@@ -914,7 +914,7 @@ describe('embedded', () => {
           },
         },
       };
-      const result = normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true });
+      const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true });
 
       expect(result).to.deep.equal(output);
     });
@@ -979,7 +979,7 @@ describe('embedded', () => {
           },
         },
       };
-      const result = normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true });
+      const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true });
 
       expect(result).to.deep.equal(output);
     });
@@ -1018,7 +1018,7 @@ describe('embedded', () => {
           },
         },
       };
-      const result = normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true });
+      const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true });
 
       expect(result).to.deep.equal(output);
     });
@@ -1049,7 +1049,7 @@ describe('embedded', () => {
           },
         },
       };
-      const result = normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true });
+      const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true });
 
       expect(result).to.deep.equal(output);
     });
