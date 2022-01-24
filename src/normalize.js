@@ -97,11 +97,15 @@ function extractAllLinks(json, uri, opts) {
   return ret;
 }
 
-function extractToVirtualKey(uri, rel, content, contentKey) {
+function extractToVirtualKey(uri, rel, content, opts) {
   const ret = {};
   const virtualKey = `${uri}#${rel}`;
   ret[virtualKey] = {
-    [contentKey]: content,
+    [opts.embeddedStandaloneListKey]: content,
+    [opts.metaKey]: {
+      self: virtualKey,
+      virtual: true,
+    },
   };
 
   ret[uri] = {};
@@ -134,7 +138,7 @@ function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
           delete ret[uri][rel];
           merge(
             ret,
-            extractToVirtualKey(uri, rel, embedded[uri][rel], opts.embeddedStandaloneListKey),
+            extractToVirtualKey(uri, rel, embedded[uri][rel], opts),
           );
         }
       }
@@ -151,7 +155,7 @@ function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
           delete ret[uri][rel];
           merge(
             ret,
-            extractToVirtualKey(uri, rel, links[uri][rel], opts.embeddedStandaloneListKey),
+            extractToVirtualKey(uri, rel, links[uri][rel], opts),
           );
         }
       });
