@@ -355,6 +355,115 @@ console.log(normalize(json, { embeddedStandaloneListKey: 'items' }));
 */
 ```
 
+## Virtual self for embedded collections without link
+
+For consistency, you might want to always have related collections referenceable, even if the API does not provide any single link under which the collection could be accessed in isolation.
+This library gives you the option to generate virtual keys (virtual URIs, virtual self links) for all embedded and linked arrays that don't already have a self link.
+To activate, set `embeddedStandaloneListVirtualKeys` to `true`.
+
+> Note: If the API also sends a single link for an embedded collection, this single link will be used instead of any virtual (generated) key, since that link will be more accurate and more useful to e.g. reload the collection from the API in isolation.
+
+The generated links are always marked with the `virtual: true` flag, so you can distinguish them from "normal" self links when doing further processing.
+
+```JavaScript
+const json = {
+  id: 1,
+  _embedded: {
+    comments: [
+      {
+        text: 'Hello World!',
+        author: 'James',
+        _links: {
+          self: {
+            href: 'https://my.api.com/comments/53204',
+          },
+        },
+      },
+      {
+        text: 'Hi there',
+        author: 'Joana',
+        _links: {
+          self: {
+            href: 'https://my.api.com/comments/1395',
+          },
+        },
+      },
+    ],
+  },
+  _links: {
+    users: [{
+      href: 'https://my.api.com/users/123',
+    }, {
+      href: 'https://my.api.com/users/324',
+    }],
+    self: {
+      href: 'https://my.api.com/someEntity/1',
+    },
+  },
+};
+
+console.log(normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true }));
+/* Output:
+{
+  'https://my.api.com/someEntity/1': {
+    id: 1,
+    comments: {
+      href: 'https://my.api.com/someEntity/1#comments',
+      virtual: true,
+    },
+    users: {
+      href: 'https://my.api.com/someEntity/1#users',
+      virtual: true,
+    },
+    _meta: {
+      self: 'https://my.api.com/someEntity/1',
+    },
+  },
+  'https://my.api.com/someEntity/1#comments': {
+    items: [
+      {
+        href: 'https://my.api.com/comments/53204',
+      },
+      {
+        href: 'https://my.api.com/comments/1395',
+      },
+    ],
+    _meta: {
+      self: 'https://my.api.com/someEntity/1#comments',
+      virtual: true,
+    },
+  },
+  'https://my.api.com/someEntity/1#users': {
+    items: [
+      {
+        href: 'https://my.api.com/users/123',
+      },
+      {
+        href: 'https://my.api.com/users/324',
+      },
+    ],
+    _meta: {
+      self: 'https://my.api.com/someEntity/1#users',
+      virtual: true,
+    },
+  },
+  'https://my.api.com/comments/53204': {
+    text: 'Hello World!',
+    author: 'James',
+    _meta: {
+      self: 'https://my.api.com/comments/53204'
+    },
+  }
+  'https://my.api.com/comments/1395': {
+    text: 'Hi there',
+    author: 'Joana',
+    _meta: {
+      self: 'https://my.api.com/comments/1395'
+    },
+  },
+}
+*/
+```
 
 ## Filtering references
 
