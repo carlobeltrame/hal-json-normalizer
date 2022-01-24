@@ -1,6 +1,9 @@
-import {
-  camelCase, isArray, cloneDeep, keys, merge, difference,
-} from 'lodash';
+import camelCase from 'lodash/camelCase';
+import isArray from 'lodash/isArray';
+import cloneDeep from 'lodash/cloneDeep';
+import keys from 'lodash/keys';
+import merge from 'lodash/merge';
+import difference from 'lodash/difference';
 
 /* eslint no-underscore-dangle: ["error", { "allow": ["_links", "_embedded"] }] */
 

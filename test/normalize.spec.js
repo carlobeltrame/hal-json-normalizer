@@ -869,6 +869,47 @@ describe('embedded', () => {
     expect(result).to.deep.equal(output);
   });
 
+  it('link array without embedded data generates virtual key', () => {
+    const json = {
+      id: '2620',
+      text: 'hello',
+      _links: {
+        questions: [
+          {
+            href: 'http://example.com/questions/295',
+          },
+        ],
+        self: {
+          href: 'http://example.com/posts/2620',
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts/2620': {
+        id: '2620',
+        text: 'hello',
+        questions: {
+          href: 'http://example.com/posts/2620#questions',
+          virtual: true,
+        },
+        _meta: {
+          self: 'http://example.com/posts/2620',
+        },
+      },
+      'http://example.com/posts/2620#questions': {
+        items: [
+          {
+            href: 'http://example.com/questions/295',
+          },
+        ],
+      },
+    };
+    const result = normalize(json, { embeddedStandaloneListKey: 'items', embeddedStandaloneListVirtualKeys: true });
+
+    expect(result).to.deep.equal(output);
+  });
+
   it('not generating virtual key if standalone link is provided', () => {
     const json = {
       id: '2620',
