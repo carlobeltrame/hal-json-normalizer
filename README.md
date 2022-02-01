@@ -355,7 +355,7 @@ console.log(normalize(json, { embeddedStandaloneListKey: 'items' }));
 */
 ```
 
-## Virtual self for embedded collections without link
+## Virtual self link for embedded collections without link
 
 For consistency, you might want to always have related collections referenceable, even if the API does not provide any single link under which the collection could be accessed in isolation.
 This library gives you the option to generate virtual keys (virtual URIs, virtual self links) for all embedded and linked arrays that don't already have a self link.
