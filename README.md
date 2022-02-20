@@ -431,6 +431,8 @@ console.log(normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLin
     _meta: {
       self: 'https://my.api.com/someEntity/1#comments',
       virtual: true,
+      parentResource: 'https://my.api.com/someEntity/1',
+      parentProperty: 'comments',
     },
   },
   'https://my.api.com/someEntity/1#users': {
@@ -445,6 +447,8 @@ console.log(normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLin
     _meta: {
       self: 'https://my.api.com/someEntity/1#users',
       virtual: true,
+      parentResource: 'https://my.api.com/someEntity/1',
+      parentProperty: 'comments',
     },
   },
   'https://my.api.com/comments/53204': {

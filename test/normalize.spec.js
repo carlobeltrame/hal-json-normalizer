@@ -858,6 +858,8 @@ describe('embedded', () => {
           _meta: {
             self: 'http://example.com/posts/2620#questions',
             virtual: true,
+            parentResource: 'http://example.com/posts/2620',
+            parentProperty: 'questions',
           },
         },
         'http://example.com/questions/295': {
@@ -911,6 +913,8 @@ describe('embedded', () => {
           _meta: {
             self: 'http://example.com/posts/2620#questions',
             virtual: true,
+            parentResource: 'http://example.com/posts/2620',
+            parentProperty: 'questions',
           },
         },
       };
@@ -1015,6 +1019,8 @@ describe('embedded', () => {
           _meta: {
             self: 'http://example.com/posts/2620#questions',
             virtual: true,
+            parentResource: 'http://example.com/posts/2620',
+            parentProperty: 'questions',
           },
         },
       };
