@@ -23,5 +23,6 @@ git config user.name "$(git config user.name)" && git config user.email "$(git c
 git pull  # make sure the SSH private key is unlocked
 d node bash
 npm login # use spam email address
-npx np
+npm i -g np
+np
 ```
