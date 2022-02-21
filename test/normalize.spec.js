@@ -858,8 +858,8 @@ describe('embedded', () => {
           _meta: {
             self: 'http://example.com/posts/2620#questions',
             virtual: true,
-            parentResource: 'http://example.com/posts/2620',
-            parentProperty: 'questions',
+            owningResource: 'http://example.com/posts/2620',
+            owningRelation: 'questions',
           },
         },
         'http://example.com/questions/295': {
@@ -913,8 +913,8 @@ describe('embedded', () => {
           _meta: {
             self: 'http://example.com/posts/2620#questions',
             virtual: true,
-            parentResource: 'http://example.com/posts/2620',
-            parentProperty: 'questions',
+            owningResource: 'http://example.com/posts/2620',
+            owningRelation: 'questions',
           },
         },
       };
@@ -1019,8 +1019,8 @@ describe('embedded', () => {
           _meta: {
             self: 'http://example.com/posts/2620#questions',
             virtual: true,
-            parentResource: 'http://example.com/posts/2620',
-            parentProperty: 'questions',
+            owningResource: 'http://example.com/posts/2620',
+            owningRelation: 'questions',
           },
         },
       };
@@ -1059,6 +1059,111 @@ describe('embedded', () => {
 
       expect(result).to.deep.equal(output);
     });
+  });
+
+  it('can handle nested embedded lists', () => {
+    const json = {
+      id: '2620',
+      text: 'hello',
+      _embedded: {
+        questions: [
+          {
+            id: 295,
+            text: 'Why?',
+            _meta: {
+              expires_at: 1513868982,
+            },
+            _embedded: {
+              options: [{
+                id: 123,
+                text: 'Because.',
+                _links: {
+                  self: {
+                    href: 'http://example.com/options/123',
+                  },
+                },
+              }],
+            },
+            _links: {
+              self: {
+                href: 'http://example.com/questions/295',
+              },
+            },
+          },
+        ],
+      },
+      _links: {
+        questions: [
+          {
+            href: 'http://example.com/questions/295',
+          },
+        ],
+        self: {
+          href: 'http://example.com/posts/2620',
+        },
+      },
+    };
+
+    const output = {
+      'http://example.com/posts/2620': {
+        id: '2620',
+        text: 'hello',
+        questions: {
+          href: 'http://example.com/posts/2620#questions',
+          virtual: true,
+        },
+        _meta: {
+          self: 'http://example.com/posts/2620',
+        },
+      },
+      'http://example.com/posts/2620#questions': {
+        items: [
+          {
+            href: 'http://example.com/questions/295',
+          },
+        ],
+        _meta: {
+          self: 'http://example.com/posts/2620#questions',
+          virtual: true,
+          owningResource: 'http://example.com/posts/2620',
+          owningRelation: 'questions',
+        },
+      },
+      'http://example.com/questions/295': {
+        id: 295,
+        text: 'Why?',
+        options: {
+          href: 'http://example.com/questions/295#options',
+          virtual: true,
+        },
+        _meta: {
+          self: 'http://example.com/questions/295',
+          expiresAt: 1513868982,
+        },
+      },
+      'http://example.com/questions/295#options': {
+        items: [
+          {
+            href: 'http://example.com/options/123',
+          },
+        ],
+        _meta: {
+          self: 'http://example.com/questions/295#options',
+          virtual: true,
+          owningResource: 'http://example.com/questions/295',
+          owningRelation: 'options',
+        },
+      },
+      'http://example.com/options/123': {
+        id: 123,
+        text: 'Because.',
+        _meta: { self: 'http://example.com/options/123' },
+      },
+    };
+
+    const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true });
+
+    expect(result).to.deep.equal(output);
   });
 });
 

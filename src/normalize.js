@@ -105,8 +105,8 @@ function extractToVirtualKey(uri, rel, content, opts) {
     [opts.metaKey]: {
       self: virtualKey,
       virtual: true,
-      parentResource: uri,
-      parentProperty: rel,
+      owningResource: uri,
+      owningRelation: rel,
     },
   };
 
