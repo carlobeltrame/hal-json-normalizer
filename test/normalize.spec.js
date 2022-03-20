@@ -1065,6 +1065,10 @@ describe('embedded', () => {
     const json = {
       id: '2620',
       text: 'hello',
+      outerArrayProperty: [{
+        outer: true,
+      }],
+      emptyOuterArrayProperty: [],
       _embedded: {
         questions: [
           {
@@ -1081,6 +1085,10 @@ describe('embedded', () => {
               options: [{
                 id: 123,
                 text: 'Because.',
+                innerArrayProperty: [{
+                  outer: false,
+                }],
+                emptyInnerArrayProperty: [],
                 _links: {
                   self: {
                     href: 'http://example.com/options/123',
@@ -1112,6 +1120,10 @@ describe('embedded', () => {
       'http://example.com/posts/2620': {
         id: '2620',
         text: 'hello',
+        outerArrayProperty: [{
+          outer: true,
+        }],
+        emptyOuterArrayProperty: [],
         questions: {
           href: 'http://example.com/posts/2620#questions',
           virtual: true,
@@ -1165,6 +1177,10 @@ describe('embedded', () => {
       'http://example.com/options/123': {
         id: 123,
         text: 'Because.',
+        innerArrayProperty: [{
+          outer: false,
+        }],
+        emptyInnerArrayProperty: [],
         _meta: { self: 'http://example.com/options/123' },
       },
     };
