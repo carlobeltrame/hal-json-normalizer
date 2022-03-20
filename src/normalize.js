@@ -118,50 +118,52 @@ function extractToVirtualKey(uri, rel, content, opts) {
   return ret;
 }
 
-function mergeEmbeddedStandaloneCollections(embedded, links, opts) {
+function mergeEmbeddedStandaloneCollections(json, uri, opts) {
   const ret = {};
+
+  const embedded = extractAllEmbedded(json, uri, opts);
+  const links = extractAllLinks(json, uri, opts);
+
   merge(ret, links);
   merge(ret, embedded);
 
-  keys(embedded).forEach((uri) => {
-    // check all embedded properties for embedded collections
-    keys(embedded[uri]).forEach((rel) => {
-      if (Array.isArray(embedded[uri][rel])) {
-        // standalone link provided (store embedded list as standalone link)
-        if (uri in links && rel in links[uri] && isSingleLink(links[uri][rel])) {
-          ret[uri][rel] = links[uri][rel];
-          ret[links[uri][rel].href] = {
-            [opts.embeddedStandaloneListKey]: embedded[uri][rel],
-            [opts.metaKey]: { self: links[uri][rel].href },
-          };
-        } else if (opts.virtualSelfLinks && rel !== opts.embeddedStandaloneListKey) {
-          // no standalone link provided --> generate virtual key
-          delete ret[uri][rel];
-          merge(
-            ret,
-            extractToVirtualKey(uri, rel, embedded[uri][rel], opts),
-          );
-        }
+  // check all embedded properties for embedded collections
+  keys(embedded[uri]).forEach((rel) => {
+    if (Array.isArray(embedded[uri][rel])) {
+      // standalone link provided (store embedded list as standalone link)
+      if (uri in links && rel in links[uri] && isSingleLink(links[uri][rel])) {
+        ret[uri][rel] = links[uri][rel];
+        ret[links[uri][rel].href] = {
+          [opts.embeddedStandaloneListKey]: embedded[uri][rel],
+          [opts.metaKey]: { self: links[uri][rel].href },
+        };
+      } else if (opts.virtualSelfLinks && rel !== opts.embeddedStandaloneListKey) {
+        // no standalone link provided --> generate virtual key
+        delete ret[uri][rel];
+        merge(
+          ret,
+          extractToVirtualKey(uri, rel, embedded[uri][rel], opts),
+        );
       }
-    });
-
-    // also check remaining link properties to search for a possible collection
-    // which is not embedded
-    if (opts.virtualSelfLinks) {
-      difference(
-        keys(links[uri]),
-        [...keys(embedded[uri]), opts.embeddedStandaloneListKey],
-      ).forEach((rel) => {
-        if (Array.isArray(links[uri][rel])) {
-          delete ret[uri][rel];
-          merge(
-            ret,
-            extractToVirtualKey(uri, rel, links[uri][rel], opts),
-          );
-        }
-      });
     }
   });
+
+  // also check remaining link properties to search for a possible collection
+  // which is not embedded
+  if (opts.virtualSelfLinks) {
+    difference(
+      keys(links[uri]),
+      [...keys(embedded[uri]), opts.embeddedStandaloneListKey],
+    ).forEach((rel) => {
+      if (Array.isArray(links[uri][rel])) {
+        delete ret[uri][rel];
+        merge(
+          ret,
+          extractToVirtualKey(uri, rel, links[uri][rel], opts),
+        );
+      }
+    });
+  }
 
   return ret;
 }
@@ -188,11 +190,8 @@ extractResource = (json, opts) => {
     }
   });
 
-  const embedded = extractAllEmbedded(json, uri, opts);
-  const links = extractAllLinks(json, uri, opts);
-
   if (opts.embeddedStandaloneListKey) {
-    merge(ret, mergeEmbeddedStandaloneCollections(embedded, links, opts));
+    merge(ret, mergeEmbeddedStandaloneCollections(json, uri, opts));
   } else {
     merge(ret, extractAllLinks(json, uri, opts));
     merge(ret, extractAllEmbedded(json, uri, opts));
