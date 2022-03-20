@@ -1073,6 +1073,10 @@ describe('embedded', () => {
             _meta: {
               expires_at: 1513868982,
             },
+            arrayProperty: [{
+              test: 123,
+            }],
+            emptyArrayProperty: [],
             _embedded: {
               options: [{
                 id: 123,
@@ -1132,6 +1136,10 @@ describe('embedded', () => {
       'http://example.com/questions/295': {
         id: 295,
         text: 'Why?',
+        arrayProperty: [{
+          test: 123,
+        }],
+        emptyArrayProperty: [],
         options: {
           href: 'http://example.com/questions/295#options',
           virtual: true,
