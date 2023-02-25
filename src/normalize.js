@@ -13,6 +13,14 @@ function normalizeLink(link, normalizeUri) {
   return { ...link, href: normalizeUri(link.href) };
 }
 
+function normalizeLinks(links, normalizeUri) {
+  if (!isArray(links)) {
+    return normalizeLink(links, normalizeUri);
+  }
+
+  return links.map((link) => normalizeLink(link, normalizeUri));
+}
+
 function camelizeNestedKeys(attributeValue) {
   if (attributeValue === null || typeof attributeValue !== 'object') {
     return attributeValue;
@@ -88,9 +96,9 @@ function extractAllLinks(json, uri, opts) {
   keys(json._links).forEach((key) => {
     if (key === 'self') return;
     if (camelizeKeys) {
-      ret[uri][camelCase(key)] = normalizeLink(cloneDeep(json._links[key]), normalizeUri);
+      ret[uri][camelCase(key)] = normalizeLinks(cloneDeep(json._links[key]), normalizeUri);
     } else {
-      ret[uri][key] = normalizeLink(cloneDeep(json._links[key]), normalizeUri);
+      ret[uri][key] = normalizeLinks(cloneDeep(json._links[key]), normalizeUri);
     }
   });
 
