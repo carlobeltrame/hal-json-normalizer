@@ -893,32 +893,32 @@ describe('embedded', () => {
       };
 
       const output = {
-        'http://example.com/posts/2620': {
+        '/posts/2620': {
           id: '2620',
           text: 'hello',
           questions: {
-            href: 'http://example.com/posts/2620#questions',
+            href: '/posts/2620#questions',
             virtual: true,
           },
           _meta: {
-            self: 'http://example.com/posts/2620',
+            self: '/posts/2620',
           },
         },
-        'http://example.com/posts/2620#questions': {
+        '/posts/2620#questions': {
           items: [
             {
-              href: 'http://example.com/questions/295',
+              href: '/questions/295',
             },
           ],
           _meta: {
-            self: 'http://example.com/posts/2620#questions',
+            self: '/posts/2620#questions',
             virtual: true,
-            owningResource: 'http://example.com/posts/2620',
+            owningResource: '/posts/2620',
             owningRelation: 'questions',
           },
         },
       };
-      const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true });
+      const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true, normalizeUri: (uri) => uri.replace(/^http:\/\/example.com/, '') });
 
       expect(result).to.deep.equal(output);
     });
@@ -1117,7 +1117,7 @@ describe('embedded', () => {
     };
 
     const output = {
-      'http://example.com/posts/2620': {
+      '/posts/2620': {
         id: '2620',
         text: 'hello',
         outerArrayProperty: [{
@@ -1125,27 +1125,27 @@ describe('embedded', () => {
         }],
         emptyOuterArrayProperty: [],
         questions: {
-          href: 'http://example.com/posts/2620#questions',
+          href: '/posts/2620#questions',
           virtual: true,
         },
         _meta: {
-          self: 'http://example.com/posts/2620',
+          self: '/posts/2620',
         },
       },
-      'http://example.com/posts/2620#questions': {
+      '/posts/2620#questions': {
         items: [
           {
-            href: 'http://example.com/questions/295',
+            href: '/questions/295',
           },
         ],
         _meta: {
-          self: 'http://example.com/posts/2620#questions',
+          self: '/posts/2620#questions',
           virtual: true,
-          owningResource: 'http://example.com/posts/2620',
+          owningResource: '/posts/2620',
           owningRelation: 'questions',
         },
       },
-      'http://example.com/questions/295': {
+      '/questions/295': {
         id: 295,
         text: 'Why?',
         arrayProperty: [{
@@ -1153,39 +1153,39 @@ describe('embedded', () => {
         }],
         emptyArrayProperty: [],
         options: {
-          href: 'http://example.com/questions/295#options',
+          href: '/questions/295#options',
           virtual: true,
         },
         _meta: {
-          self: 'http://example.com/questions/295',
+          self: '/questions/295',
           expiresAt: 1513868982,
         },
       },
-      'http://example.com/questions/295#options': {
+      '/questions/295#options': {
         items: [
           {
-            href: 'http://example.com/options/123',
+            href: '/options/123',
           },
         ],
         _meta: {
-          self: 'http://example.com/questions/295#options',
+          self: '/questions/295#options',
           virtual: true,
-          owningResource: 'http://example.com/questions/295',
+          owningResource: '/questions/295',
           owningRelation: 'options',
         },
       },
-      'http://example.com/options/123': {
+      '/options/123': {
         id: 123,
         text: 'Because.',
         innerArrayProperty: [{
           outer: false,
         }],
         emptyInnerArrayProperty: [],
-        _meta: { self: 'http://example.com/options/123' },
+        _meta: { self: '/options/123' },
       },
     };
 
-    const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true });
+    const result = normalize(json, { embeddedStandaloneListKey: 'items', virtualSelfLinks: true, normalizeUri: (uri) => uri.replace(/^http:\/\/example.com/, '') });
 
     expect(result).to.deep.equal(output);
   });
@@ -1336,24 +1336,24 @@ describe('links', () => {
     };
 
     const output = {
-      'http://example.com/api/v1/post/2620': {
+      '/post/2620': {
         id: 2620,
         text: 'hello',
         comments: [
           {
-            href: 'http://example.com/api/v1/post/2620/comments/3450',
+            href: '/post/2620/comments/3450',
           },
           {
-            href: 'http://example.com/api/v1/post/2620/comments/3451',
+            href: '/post/2620/comments/3451',
           },
         ],
         _meta: {
-          self: 'http://example.com/api/v1/post/2620',
+          self: '/post/2620',
         },
       },
     };
 
-    const result = normalize(json);
+    const result = normalize(json, { normalizeUri: (uri) => uri.replace(/^http:\/\/example.com\/api\/v1/, '') });
 
     expect(result).to.deep.equal(output);
   });
