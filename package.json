@@ -30,6 +30,9 @@
     "Vuex"
   ],
   "author": "Carlo Beltrame",
+  "contributors": [
+    "Manuel Meister"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/carlobeltrame/hal-json-normalizer/issues"
