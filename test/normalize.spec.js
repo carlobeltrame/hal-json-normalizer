@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, it } from 'vitest';
 import normalize from '../src/normalize';
 
 describe('data is normalized', () => {

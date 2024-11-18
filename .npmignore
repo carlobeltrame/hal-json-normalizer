@@ -1,11 +1,8 @@
 coverage
 demo
 docs
-src
 test
-.babelrc
 .eslintrc
 .idea
-.nyc_output
 .github
-webpack.config.js
+vite.config.js

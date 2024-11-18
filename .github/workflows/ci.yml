@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [18.x, 20.x, 22.x]
     steps:
 
       - uses: actions/checkout@v2
@@ -57,17 +57,17 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Use Node.js 14.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 22.x
 
       - uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-14.x-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-22.x-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-14.x-
+            ${{ runner.os }}-node-22.x-
 
       - run: npm install
 

@@ -2,13 +2,21 @@
   "name": "hal-json-normalizer",
   "version": "4.2.0",
   "description": "HAL JSON API response normalizer",
-  "main": "dist/bundle.js",
+  "type": "module",
+  "main": "dist/bundle.cjs",
+  "module": "dist/bundle.js",
+  "exports": {
+    ".": {
+      "import": "./dist/bundle.js",
+      "require": "./dist/bundle.cjs"
+    }
+  },
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "vite build",
     "clean": "rimraf dist coverage lib",
-    "coverage": "nyc --reporter=lcov npm run test",
+    "coverage": "vitest run --coverage",
     "lint": "eslint src --ext .js",
-    "test": "npm run build && mocha --require @babel/register"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -28,28 +36,20 @@
   },
   "homepage": "https://github.com/carlobeltrame/hal-json-normalizer#readme",
   "engines": {
-    "node": ">= 10.13.0"
+    "node": ">= 18.17.0"
   },
   "devDependencies": {
-    "@babel/core": "7.24.9",
-    "@babel/preset-env": "7.24.8",
-    "@babel/register": "7.24.6",
+    "@vitest/coverage-v8": "^2.1.4",
     "babel-eslint": "10.1.0",
-    "babel-loader": "8.3.0",
-    "chai": "4.5.0",
     "eslint": "7.32.0",
     "eslint-config-airbnb-base": "15.0.0",
-    "eslint-loader": "4.0.2",
     "eslint-plugin-import": "2.29.1",
-    "mocha": "9.2.2",
-    "nyc": "15.1.0",
     "rimraf": "3.0.2",
-    "webpack": "5.94.0",
-    "webpack-cli": "4.10.0",
-    "webpack-node-externals": "3.0.0"
+    "vite": "^4.0.0",
+    "vitest": "^2.1.4"
   },
   "dependencies": {
-    "lodash": "^4.17.15"
+    "lodash-es": "^4.17.15"
   },
   "np": {
     "yarn": false
