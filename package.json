@@ -31,9 +31,9 @@
     "node": ">= 10.13.0"
   },
   "devDependencies": {
-    "@babel/core": "7.28.0",
-    "@babel/preset-env": "7.28.0",
-    "@babel/register": "7.27.1",
+    "@babel/core": "7.28.3",
+    "@babel/preset-env": "7.28.3",
+    "@babel/register": "7.28.3",
     "babel-eslint": "10.1.0",
     "babel-loader": "8.4.1",
     "chai": "4.5.0",
